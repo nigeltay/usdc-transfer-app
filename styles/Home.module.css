@@ -8,7 +8,7 @@
 }
 
 .walletAddress {
-  font-family: var(--font-mono);
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: white;
   margin: 20px;
 text-align: right;
@@ -21,22 +21,43 @@ text-align: right;
   padding-left: 5px
 }
 
-.allPosts {
-  font-family: var(--font-mono);
+.createBusinessAccountText {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: black;
   padding-left: 25px;
   padding-top: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  /* text-align: center; */
+}
 
+.homePageContainers {
+  background-color: rgb(227, 226, 226);
+  width:400px;
+  margin: 10px;
+  border-radius: 15px;
+}
+
+.imageContainer {
+  display: flex;
+  padding-left: 25px;
+  /* justify-content: center;
+  align-items: center; */
+}
+
+.buttonContainer {
+  display: flex;
+  /* justify-content: center; */
 }
 
 .createPostText {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: black;
   margin: 20px;
 }
 
 .createPostContainer {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: black;
   margin: 20px;
   border-color: black;
@@ -45,13 +66,13 @@ text-align: right;
 
 
 .paragraphText {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin: 5px;
   color: black;
 }
 
 .commentHeading {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin-top: 25px;
   margin-left: 40px;
   color: black;
@@ -59,14 +80,14 @@ text-align: right;
 }
 
 .activePostText {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin: 5px;
   margin-left: 50px;
   color: black;
 }
 
 .detailsText {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin: 5px;
   margin-left: 50px;
   color: black;
@@ -80,12 +101,6 @@ text-align: right;
   background-color: blue;
 }
 
-.backBtn {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: black;
-  color: white;
-}
 
 .upvoteBtn {
   cursor: pointer;
@@ -104,21 +119,37 @@ text-align: right;
   color: white;
 }
 
-.viewPostBtn {
-  margin: 10px;
+.goToCreateBusinessPageBtn {
+  margin: 20px;
   padding: 10px;
   background-color: green;
   color: white;
+  margin-left: 25px;
+}
+
+.createBusinessBtn {
+  padding: 10px;
+  background-color: green;
+  color: white;
+  width: 200px;
+}
+
+.backBtn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  width: 200px;
 }
 
 .activePostContainer {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: black;
   margin: 20px;
 }
 
 .hyperlinkText {
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin: 5px;
   color: blue;
   text-decoration: underline;
@@ -132,7 +163,7 @@ text-align: right;
   max-width: var(--max-width);
   width: 100%;
   z-index: 2;
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .description a {
@@ -153,7 +184,7 @@ text-align: right;
 
 .code {
   font-weight: 700;
-  font-family: var(--font-mono);
+ font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .grid {

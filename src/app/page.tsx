@@ -28,6 +28,11 @@ export default function Home() {
     setCurrentWalletAddress(walletAddr);
   }
 
+  const goToCreateBusinessPage = () => {
+    // Navigate to the desired page on button click
+    // You can replace "/otherpage" with the path of the page you want to navigate to
+    window.location.href = "/createBusiness";
+  };
   useEffect(() => {
     connectWallet();
   }, []);
@@ -54,6 +59,72 @@ export default function Home() {
           <div className={styles.walletAddress}>{`USDC Transfer App`}</div>
           <div className={styles.walletAddress}>
             {`Wallet Address: ${currentWalletAddress}`}
+          </div>
+        </div>
+
+        <div style={{ display: "flex" }}>
+          {/* create business account */}
+          <div className={styles.homePageContainers}>
+            <div className={styles.imageContainer}>
+              <Image
+                src="/images/business.png"
+                alt="Business Image"
+                width={100}
+                height={100}
+              />
+            </div>
+
+            <h2 className={styles.createBusinessAccountText}>
+              <div>{`Create Business Account`}</div>
+            </h2>
+            <div
+              style={{
+                color: "black",
+                paddingLeft: "25px",
+                paddingTop: "10px",
+                //textAlign: "center",
+              }}
+            >
+              {`Creates an account for members of the
+            business to make contributions.`}
+            </div>
+            <div className={styles.buttonContainer}>
+              <button
+                className={styles.goToCreateBusinessPageBtn}
+                onClick={goToCreateBusinessPage}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+
+          {/* Fund business account */}
+          <div className={styles.homePageContainers}>
+            <div className={styles.imageContainer}>
+              <Image
+                src="/images/fund.png"
+                alt="Business Image"
+                width={100}
+                height={100}
+              />
+            </div>
+
+            <h2 className={styles.createBusinessAccountText}>
+              <div>{`Fund Business Account`}</div>
+            </h2>
+            <div
+              style={{
+                color: "black",
+                paddingLeft: "25px",
+                paddingTop: "10px",
+                //textAlign: "center",
+              }}
+            >
+              {`Add USDC funds into the business account.`}
+            </div>
+            <div className={styles.buttonContainer}>
+              <button className={styles.goToCreateBusinessPageBtn}>Fund</button>
+            </div>
           </div>
         </div>
       </div>
