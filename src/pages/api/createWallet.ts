@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
+import uuid from "uuid-random";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,7 +10,7 @@ export default async function handler(
 
   try {
     var data = JSON.stringify({
-      idempotencyKey: "dd1bcdf3-9f10-4a39-a664-93d34fe83448",
+      idempotencyKey: uuid(),
       description: description,
     });
 
@@ -27,14 +28,14 @@ export default async function handler(
     axios(config)
       .then(function (response) {
         console.log(response.data);
-        return res.status(200).json({ data: response.data });
+        return res.status(200).json({ responseData: response.data });
       })
       .catch(function (error) {
         console.log(error);
       });
   } catch (error: any) {
     console.log(error.response);
-    return res.status(400).json({ data: error.response.data });
+    return res.status(400).json({ error: error.response.data });
   }
 }
 

@@ -5,10 +5,26 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import styles from "../../styles/Home.module.css";
-// import globalStyles from "../../styles/"
+// import uuid from "uuid-random";
+import axios from "axios";
 
 export default function Home() {
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
+  const [apiKey, setApiKey] = useState<string>("");
+  const [walletDescription, setWalletDescription] = useState<string>("");
+
+  const [loadedData, setLoadedData] = useState("Loading...");
+  const [isLoading, setIsLoading] = useState(false);
+
+  function openModal() {
+    setIsLoading(true);
+  }
+
+  function closeModal() {
+    setIsLoading(false);
+  }
+
+  //connect metamask wallet
   async function connectWallet() {
     //connect metamask account on page enter
     const { ethereum } = window;
@@ -29,9 +45,63 @@ export default function Home() {
   }
 
   const goToHomepage = () => {
-    // Navigate to the desired page on button click
-    // You can replace "/otherpage" with the path of the page you want to navigate to
     window.location.href = "/";
+  };
+
+  async function createBusiness() {
+    try {
+      //validate fields
+      if (!walletDescription) {
+        return alert("Wallet description field is empty. ");
+      }
+
+      if (!apiKey) {
+        return alert("API key field is empty.");
+      }
+
+      //call createWallet endpoint
+      const createWallet = await axios.post("/api/createWallet", {
+        apiKey: apiKey,
+        description: walletDescription,
+      });
+      const createWalletResponseData = createWallet.data.responseData.data;
+      console.log(createWalletResponseData);
+
+      //sample output response
+      // {
+      //   "walletId": "1016266156",
+      //   "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
+      //   "type": "end_user_wallet",
+      //   "description": "Business Wallet",
+      //   "balances": []
+      // }
+
+      //get wallet Id to create blockchain address for that wallet
+
+      const newWalletId = createWalletResponseData.walletId;
+
+      //call createBlockchainAddress endpoint
+      // WIP
+    } catch (error: any) {
+      //e.g. { code: 401, message: "Invalid credentials." }
+      console.log(error.response.data.error);
+
+      alert(
+        `Error:${error.response.data.error.code} ${error.response.data.error.message}`
+      );
+    }
+  }
+
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      color: "black ",
+    },
   };
 
   useEffect(() => {
@@ -55,6 +125,16 @@ export default function Home() {
           </div>
         </div>
 
+        {/* loading modal */}
+        <Modal
+          isOpen={isLoading}
+          //onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          {loadedData}
+        </Modal>
+
         <div>
           <h2 className={styles.createBusinessAccountText}>
             <div>{`Create Business Account`}</div>
@@ -67,9 +147,29 @@ export default function Home() {
 
             <input
               type="text"
-              placeholder="Enter text here"
-              // onChange={(e) => setCommentText(e.target.value)}
-              // value={commentText}
+              placeholder="Enter your API Key here"
+              onChange={(e) => setApiKey(e.target.value)}
+              value={apiKey}
+              style={{
+                padding: "15px",
+                textAlign: "center",
+                display: "block",
+                backgroundColor: "white",
+                color: "black",
+                width: "600px",
+                marginBottom: "10px",
+              }}
+            />
+
+            <div style={{ marginBottom: "10px" }}>
+              <label>Wallet Description</label>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Add Your description here"
+              onChange={(e) => setWalletDescription(e.target.value)}
+              value={walletDescription}
               style={{
                 padding: "15px",
                 textAlign: "center",
@@ -82,8 +182,11 @@ export default function Home() {
             />
 
             <div className={styles.buttonContainer}>
-              <button className={styles.createBusinessBtn}>
-                Create Business
+              <button
+                className={styles.createBusinessBtn}
+                onClick={createBusiness}
+              >
+                Create
               </button>
             </div>
 
