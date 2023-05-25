@@ -7,8 +7,11 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 // import uuid from "uuid-random";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [walletDescription, setWalletDescription] = useState<string>("");
@@ -27,6 +30,9 @@ export default function Home() {
 
   //connect metamask wallet
   async function connectWallet() {
+    //get value from url query
+    // console.log(router.query);
+
     //connect metamask account on page enter
     const { ethereum } = window;
 
@@ -46,7 +52,10 @@ export default function Home() {
   }
 
   const goToHomepage = () => {
-    window.location.href = "/";
+    router.push({
+      pathname: "/",
+      //   query: { params1: "test" }, //send data to page
+    });
   };
 
   const customStyles = {

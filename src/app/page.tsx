@@ -28,16 +28,6 @@ export default function Home() {
     setCurrentWalletAddress(walletAddr);
   }
 
-  const goToCreateBusinessPage = () => {
-    // Navigate to the desired page on button click
-    // You can replace "/otherpage" with the path of the page you want to navigate to
-    window.location.href = "/createBusiness";
-  };
-
-  const goToMyBusinessPage = () => {
-    window.location.href = "/myBusiness";
-  };
-
   useEffect(() => {
     connectWallet();
   }, []);
@@ -88,12 +78,11 @@ export default function Home() {
             business to make contributions.`}
             </div>
             <div className={styles.buttonContainer}>
-              <button
-                className={styles.goToCreateBusinessPageBtn}
-                onClick={goToCreateBusinessPage}
-              >
-                Create
-              </button>
+              <Link href={`/createBusiness`}>
+                <button className={styles.goToCreateBusinessPageBtn}>
+                  Create
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -116,12 +105,11 @@ export default function Home() {
               {`Transfer USDC to this account for funding.`}
             </div>
             <div className={styles.buttonContainer}>
-              <button
-                className={styles.goToCreateBusinessPageBtn}
-                onClick={goToMyBusinessPage}
-              >
-                View
-              </button>
+              <Link href={`/myBusiness?param1=value1`}>
+                <button className={styles.goToCreateBusinessPageBtn}>
+                  View
+                </button>
+              </Link>
             </div>
           </div>
         </div>

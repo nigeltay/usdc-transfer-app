@@ -7,8 +7,11 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 // import uuid from "uuid-random";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [walletDescription, setWalletDescription] = useState<string>("");
@@ -46,7 +49,9 @@ export default function Home() {
   }
 
   const goToHomepage = () => {
-    window.location.href = "/";
+    router.push({
+      pathname: "/",
+    });
   };
 
   async function createBusiness() {
