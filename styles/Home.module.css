@@ -7,6 +7,13 @@
   min-height: 100vh;
 }
 
+.background {
+  background-color: rgb(217, 216, 216);
+  min-width: 500px;
+  padding-bottom: 10px;
+  min-height: 950px;
+}
+
 .walletAddress {
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: white;
@@ -32,8 +39,15 @@ text-align: right;
 }
 
 .homePageContainers {
-  background-color: rgb(227, 226, 226);
+  background-color: white;
   width:400px;
+  margin: 10px;
+  border-radius: 15px;
+}
+
+.myBusinessPageContainer {
+  background-color: white;
+  /* width:400px; */
   margin: 10px;
   border-radius: 15px;
 }

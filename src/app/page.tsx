@@ -47,14 +47,7 @@ export default function Home() {
         <link rel="icon" href="/images.png" />
       </Head>
 
-      <div
-        style={{
-          backgroundColor: "white",
-          minWidth: "500px",
-          paddingBottom: "10px",
-          minHeight: "950px",
-        }}
-      >
+      <div className={styles.background}>
         <div className={styles.topPanel}>
           <div className={styles.walletAddress}>{`USDC Transfer App`}</div>
           <div className={styles.walletAddress}>
@@ -64,6 +57,7 @@ export default function Home() {
 
         <div style={{ display: "flex" }}>
           {/* create business account */}
+
           <div className={styles.homePageContainers}>
             <div className={styles.imageContainer}>
               <Image
@@ -97,36 +91,8 @@ export default function Home() {
               </button>
             </div>
           </div>
-
-          {/* Fund business account */}
-          <div className={styles.homePageContainers}>
-            <div className={styles.imageContainer}>
-              <Image
-                src="/images/fund.png"
-                alt="Business Image"
-                width={100}
-                height={100}
-              />
-            </div>
-
-            <h2 className={styles.createBusinessAccountText}>
-              <div>{`Fund Business Account`}</div>
-            </h2>
-            <div
-              style={{
-                color: "black",
-                paddingLeft: "25px",
-                paddingTop: "10px",
-                //textAlign: "center",
-              }}
-            >
-              {`Add USDC funds into the business account.`}
-            </div>
-            <div className={styles.buttonContainer}>
-              <button className={styles.goToCreateBusinessPageBtn}>Fund</button>
-            </div>
-          </div>
         </div>
+        <div style={{ color: "black", padding: "10px" }}>Explore Accounts</div>
       </div>
     </>
   );

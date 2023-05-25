@@ -1,32 +1,31 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import uuid from "uuid-random";
+// import uuid from "uuid-random";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const { apiKey, description } = req.body;
+  const { apiKey, walletId } = req.body;
 
-  var data = JSON.stringify({
-    idempotencyKey: uuid(),
-    description: description,
-  });
+  // var data = JSON.stringify({
+  //   idempotencyKey: uuid(),
+  //   description: description,
+  // });
 
   var config = {
-    method: "post",
-    url: "https://api-sandbox.circle.com/v1/wallets",
+    method: "get",
+    url: `https://api-sandbox.circle.com/v1/wallets/${walletId}`,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
-    data: data,
   };
 
   axios(config)
     .then(function (response) {
-      console.log(response.data);
+      // console.log(response.data);
       return res.status(200).json({ responseData: response.data });
     })
     .catch(function (error) {

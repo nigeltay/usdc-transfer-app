@@ -12,6 +12,7 @@ export default function Home() {
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [walletDescription, setWalletDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
@@ -110,14 +111,7 @@ export default function Home() {
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: "white",
-          minWidth: "500px",
-          margin: "-10px",
-          minHeight: "950px",
-        }}
-      >
+      <div className={styles.background} style={{ margin: "-10px" }}>
         <div className={styles.topPanel}>
           <div className={styles.walletAddress}>{`USDC Transfer App`}</div>
           <div className={styles.walletAddress}>
@@ -135,11 +129,34 @@ export default function Home() {
           {loadedData}
         </Modal>
 
-        <div>
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "15px",
+            margin: "20px",
+          }}
+        >
           <h2 className={styles.createBusinessAccountText}>
             <div>{`Create Business Account`}</div>
           </h2>
+          <div style={{ margin: "25px", paddingBottom: "20px" }}>
+            Name and define your Business account details here. All Information
+            will be displayed on the explore section of the homepage once
+            account is created.
+          </div>
+        </div>
 
+        <div
+          style={{
+            backgroundColor: "whitesmoke",
+            // marginLeft: "100px",
+            // marginRight: "100px",
+            borderRadius: "15px",
+            margin: "20px",
+            paddingTop: "20px",
+            paddingBottom: "20px",
+          }}
+        >
           <div style={{ marginTop: "20px", marginLeft: "25px" }}>
             <div style={{ marginBottom: "10px" }}>
               <label>Add Circle API Key</label>
@@ -170,6 +187,26 @@ export default function Home() {
               placeholder="Add Your description here"
               onChange={(e) => setWalletDescription(e.target.value)}
               value={walletDescription}
+              style={{
+                padding: "15px",
+                textAlign: "center",
+                display: "block",
+                backgroundColor: "white",
+                color: "black",
+                width: "600px",
+                marginBottom: "10px",
+              }}
+            />
+
+            <div style={{ marginBottom: "10px" }}>
+              <label>Title</label>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Add Your title here"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
               style={{
                 padding: "15px",
                 textAlign: "center",
