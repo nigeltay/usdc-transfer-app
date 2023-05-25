@@ -33,6 +33,11 @@ export default function Home() {
     // You can replace "/otherpage" with the path of the page you want to navigate to
     window.location.href = "/createBusiness";
   };
+
+  const goToMyBusinessPage = () => {
+    window.location.href = "/myBusiness";
+  };
+
   useEffect(() => {
     connectWallet();
   }, []);
@@ -55,7 +60,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ display: "flex" }}>
+        <div style={{ marginLeft: "100px", marginRight: "100px" }}>
           {/* create business account */}
 
           <div className={styles.homePageContainers}>
@@ -91,8 +96,35 @@ export default function Home() {
               </button>
             </div>
           </div>
+
+          <div style={{ color: "black", padding: "10px" }}>
+            Explore Accounts
+          </div>
+
+          <div className={styles.homePageContainers}>
+            <h2 className={styles.createBusinessAccountText}>
+              <div>{`Business Account 1`}</div>
+            </h2>
+            <div
+              style={{
+                color: "black",
+                paddingLeft: "25px",
+                paddingTop: "10px",
+                //textAlign: "center",
+              }}
+            >
+              {`Transfer USDC to this account for funding.`}
+            </div>
+            <div className={styles.buttonContainer}>
+              <button
+                className={styles.goToCreateBusinessPageBtn}
+                onClick={goToMyBusinessPage}
+              >
+                View
+              </button>
+            </div>
+          </div>
         </div>
-        <div style={{ color: "black", padding: "10px" }}>Explore Accounts</div>
       </div>
     </>
   );

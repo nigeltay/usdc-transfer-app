@@ -128,108 +128,109 @@ export default function Home() {
         >
           {loadedData}
         </Modal>
-
-        <div
-          style={{
-            backgroundColor: "white",
-            borderRadius: "15px",
-            margin: "20px",
-          }}
-        >
-          <h2 className={styles.createBusinessAccountText}>
-            <div>{`Create Business Account`}</div>
-          </h2>
-          <div style={{ margin: "25px", paddingBottom: "20px" }}>
-            Name and define your Business account details here. All Information
-            will be displayed on the explore section of the homepage once
-            account is created.
+        <div style={{ marginLeft: "100px", marginRight: "100px" }}>
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "15px",
+              margin: "20px",
+            }}
+          >
+            <h2 className={styles.createBusinessAccountText}>
+              <div>{`Create Business Account`}</div>
+            </h2>
+            <div style={{ margin: "25px", paddingBottom: "20px" }}>
+              Name and define your Business account details here. All
+              Information will be displayed on the explore section of the
+              homepage once account is created.
+            </div>
           </div>
-        </div>
 
-        <div
-          style={{
-            backgroundColor: "whitesmoke",
-            // marginLeft: "100px",
-            // marginRight: "100px",
-            borderRadius: "15px",
-            margin: "20px",
-            paddingTop: "20px",
-            paddingBottom: "20px",
-          }}
-        >
-          <div style={{ marginTop: "20px", marginLeft: "25px" }}>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Add Circle API Key</label>
-            </div>
+          <div
+            style={{
+              backgroundColor: "whitesmoke",
+              // marginLeft: "100px",
+              // marginRight: "100px",
+              borderRadius: "15px",
+              margin: "20px",
+              paddingTop: "20px",
+              paddingBottom: "20px",
+            }}
+          >
+            <div style={{ marginTop: "20px", marginLeft: "25px" }}>
+              <div style={{ marginBottom: "10px" }}>
+                <label>Add Circle API Key</label>
+              </div>
 
-            <input
-              type="text"
-              placeholder="Enter your API Key here"
-              onChange={(e) => setApiKey(e.target.value)}
-              value={apiKey}
-              style={{
-                padding: "15px",
-                textAlign: "center",
-                display: "block",
-                backgroundColor: "white",
-                color: "black",
-                width: "600px",
-                marginBottom: "10px",
-              }}
-            />
+              <input
+                type="text"
+                placeholder="Enter your API Key here"
+                onChange={(e) => setApiKey(e.target.value)}
+                value={apiKey}
+                style={{
+                  padding: "15px",
+                  textAlign: "center",
+                  display: "block",
+                  backgroundColor: "white",
+                  color: "black",
+                  width: "600px",
+                  marginBottom: "10px",
+                }}
+              />
 
-            <div style={{ marginBottom: "10px" }}>
-              <label>Wallet Description</label>
-            </div>
+              <div style={{ marginBottom: "10px" }}>
+                <label>Wallet Description</label>
+              </div>
 
-            <input
-              type="text"
-              placeholder="Add Your description here"
-              onChange={(e) => setWalletDescription(e.target.value)}
-              value={walletDescription}
-              style={{
-                padding: "15px",
-                textAlign: "center",
-                display: "block",
-                backgroundColor: "white",
-                color: "black",
-                width: "600px",
-                marginBottom: "10px",
-              }}
-            />
+              <input
+                type="text"
+                placeholder="Add Your description here"
+                onChange={(e) => setWalletDescription(e.target.value)}
+                value={walletDescription}
+                style={{
+                  padding: "15px",
+                  textAlign: "center",
+                  display: "block",
+                  backgroundColor: "white",
+                  color: "black",
+                  width: "600px",
+                  marginBottom: "10px",
+                }}
+              />
 
-            <div style={{ marginBottom: "10px" }}>
-              <label>Title</label>
-            </div>
+              <div style={{ marginBottom: "10px" }}>
+                <label>Title</label>
+              </div>
 
-            <input
-              type="text"
-              placeholder="Add Your title here"
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-              style={{
-                padding: "15px",
-                textAlign: "center",
-                display: "block",
-                backgroundColor: "white",
-                color: "black",
-                width: "600px",
-                marginBottom: "10px",
-              }}
-            />
+              <input
+                type="text"
+                placeholder="Add Your title here"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+                style={{
+                  padding: "15px",
+                  textAlign: "center",
+                  display: "block",
+                  backgroundColor: "white",
+                  color: "black",
+                  width: "600px",
+                  marginBottom: "10px",
+                }}
+              />
 
-            <div className={styles.buttonContainer}>
-              <button
-                className={styles.createBusinessBtn}
-                onClick={createBusiness}
-              >
-                Create
+              <div className={styles.buttonContainer}>
+                <button
+                  className={styles.createBusinessBtn}
+                  onClick={createBusiness}
+                >
+                  Create
+                </button>
+              </div>
+
+              <button className={styles.backBtn} onClick={goToHomepage}>
+                Back
               </button>
             </div>
-
-            <button className={styles.backBtn} onClick={goToHomepage}>
-              Back
-            </button>
           </div>
         </div>
       </div>
