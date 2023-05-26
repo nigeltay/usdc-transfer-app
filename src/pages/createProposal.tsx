@@ -13,7 +13,10 @@ export default function Home() {
   const router = useRouter();
 
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
-  const [apiKey, setApiKey] = useState<string>("");
+
+  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [targetWalletAddress, setTargetWalletAddress] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,12 +59,6 @@ export default function Home() {
     });
   };
 
-  const goToCreateProposalPage = () => {
-    router.push({
-      pathname: "/createProposal",
-    });
-  };
-
   const customStyles = {
     content: {
       top: "50%",
@@ -101,7 +98,7 @@ export default function Home() {
         <div style={{ marginLeft: "100px", marginRight: "100px" }}>
           <div className={styles.myBusinessPageContainer}>
             <h2 className={styles.createBusinessAccountText}>
-              <div>{`My Sample Business Account`}</div>
+              <div>{`Create a Proposal`}</div>
             </h2>
             <div
               style={{
@@ -117,67 +114,87 @@ export default function Home() {
                   //textAlign: "center",
                 }}
               >
-                {`Dummy Description.....`}
-              </div>
-              <div>
-                <button
-                  className={styles.createBusinessBtn}
-                  onClick={goToHomepage}
-                >
-                  Back to homepage
-                </button>
+                {`Provide Information that voters will need to know.`}
               </div>
             </div>
           </div>
 
-          <div style={{ display: "flex" }}>
-            <div className={styles.proposalSectionContainer}>
-              <h2 className={styles.createBusinessAccountText}>
-                <div>{`Proposals`}</div>
-              </h2>
-              {/* // */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div
-                  style={{
-                    color: "black",
-                    paddingLeft: "25px",
-                    paddingTop: "10px",
-                    //textAlign: "center",
-                  }}
-                >
-                  {`0 Proposals Created`}
+          <div className={styles.createProposalContainer}>
+            <h2 className={styles.createBusinessAccountText}>
+              <div>{`Proposal Details`}</div>
+            </h2>
+            {/* // */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ marginTop: "20px", marginLeft: "25px" }}>
+                <div style={{ marginBottom: "10px" }}>
+                  <label>Proposal Ttile</label>
                 </div>
-                <div>
-                  <button
-                    className={styles.createProposalBtn}
-                    onClick={goToCreateProposalPage}
-                  >
-                    New Proposal
-                  </button>
-                </div>
-              </div>
-            </div>
 
-            <div className={styles.balanceSectionContainer}>
-              <h2 className={styles.createBusinessAccountText}>
-                <div>{`Balances`}</div>
-              </h2>
-              <div
-                style={{
-                  color: "black",
-                  paddingLeft: "25px",
-                  paddingTop: "10px",
-                  //textAlign: "center",
-                }}
-              >
-                {`$6.50`}
+                <input
+                  type="text"
+                  placeholder="Add Proposal title here"
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title}
+                  style={{
+                    padding: "15px",
+                    textAlign: "center",
+                    display: "block",
+                    backgroundColor: "white",
+                    color: "black",
+                    width: "600px",
+                    marginBottom: "10px",
+                  }}
+                />
+
+                <div style={{ marginBottom: "10px" }}>
+                  <label>Proposal Description</label>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Enter your description here"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  style={{
+                    padding: "15px",
+                    textAlign: "center",
+                    display: "block",
+                    backgroundColor: "white",
+                    color: "black",
+                    width: "600px",
+                    marginBottom: "10px",
+                  }}
+                />
+
+                <div style={{ marginBottom: "10px" }}>
+                  <label>Target wallet Address</label>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Enter target wallet address"
+                  onChange={(e) => setTargetWalletAddress(e.target.value)}
+                  value={targetWalletAddress}
+                  style={{
+                    padding: "15px",
+                    textAlign: "center",
+                    display: "block",
+                    backgroundColor: "white",
+                    color: "black",
+                    width: "600px",
+                    marginBottom: "10px",
+                  }}
+                />
+
+                <button className={styles.backBtn} onClick={goToHomepage}>
+                  Back
+                </button>
               </div>
-              <div className={styles.buttonContainer}></div>
             </div>
           </div>
 
