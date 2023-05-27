@@ -77,7 +77,7 @@ export default function Home() {
               {`Creates an account for members of the
             business to make contributions.`}
             </div>
-            <div className={styles.buttonContainer}>
+            <div className={styles.homePageButtonContainer}>
               <Link href={`/createBusiness`}>
                 <button className={styles.goToCreateBusinessPageBtn}>
                   Create
@@ -104,7 +104,7 @@ export default function Home() {
             >
               {`Transfer USDC to this account for funding.`}
             </div>
-            <div className={styles.buttonContainer}>
+            <div className={styles.homePageButtonContainer}>
               <Link href={`/myBusiness?param1=value1`}>
                 <button className={styles.goToCreateBusinessPageBtn}>
                   View
