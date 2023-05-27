@@ -71,6 +71,7 @@ export default function Home() {
                 color: "black",
                 paddingLeft: "25px",
                 paddingTop: "10px",
+                paddingRight: "10px",
                 //textAlign: "center",
               }}
             >
