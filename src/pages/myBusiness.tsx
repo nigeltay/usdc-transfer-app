@@ -14,6 +14,7 @@ export default function Home() {
 
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
+  const [currentBalance, setCurrentBalance] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +46,12 @@ export default function Home() {
     });
     // Get the first account address
     const walletAddr = accounts[0];
+    // Get account balance
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const balance = await provider.getBalance(walletAddr);
+    const balanceAvax = ethers.utils.formatEther(balance);
+    // Set to variable to store account balance
+    setCurrentBalance(balanceAvax);
     //set to variable to store current wallet address
     setCurrentWalletAddress(walletAddr);
   }
@@ -165,7 +172,7 @@ export default function Home() {
 
             <div className={styles.balanceSectionContainer}>
               <h2 className={styles.createBusinessAccountText}>
-                <div>{`Balances`}</div>
+                <div>{`Balance (AVAX)`}</div>
               </h2>
               <div
                 style={{
@@ -175,7 +182,7 @@ export default function Home() {
                   //textAlign: "center",
                 }}
               >
-                {`$6.50`}
+                {`${currentBalance}`}
               </div>
               <div className={styles.buttonContainer}></div>
             </div>
