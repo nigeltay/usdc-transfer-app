@@ -1,0 +1,228 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_description",
+				"type": "string"
+			}
+		],
+		"name": "createTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			}
+		],
+		"name": "joinTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_proposalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isVoteYes",
+				"type": "bool"
+			}
+		],
+		"name": "voteOnWithdrawProposal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address[]",
+				"name": "_proposalList",
+				"type": "address[]"
+			}
+		],
+		"name": "getProposalOverviewData",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "proposerAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "proposalTitle",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "proposalDescription",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "status",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "withdrawAmount",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "numberOfYesVotes",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "numberOfNoVotes",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			}
+		],
+		"name": "getProposals",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "_proposalAddresses",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "_treasuryList",
+				"type": "address[]"
+			}
+		],
+		"name": "getTreasuriesData",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "title",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "description",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getTresuries",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "_treasuryAddresses",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_proposalAddress",
+				"type": "address"
+			}
+		],
+		"name": "hasVoted",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "treasuries",
+		"outputs": [
+			{
+				"internalType": "contract Treasury",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "treasuryIDs",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

@@ -7,8 +7,23 @@ import Link from "next/link";
 import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 
+//ABIs
+import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+
+type Treasury = {
+  title: string;
+  description: string;
+  treasurySCAddress: string;
+  //businessAccountAddress
+  //businessAccountWalletId
+};
+
 export default function Home() {
+  const treasuryContractAddress = "0xE2292c7c0d70FF50A9e123716F90EAfa4178be41"; //TODO: put into env file
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
+
+  const [treasuries, setTreasuries] = useState<Treasury[]>([]);
+
   async function connectWallet() {
     //connect metamask account on page enter
     const { ethereum } = window;
@@ -28,8 +43,57 @@ export default function Home() {
     setCurrentWalletAddress(walletAddr);
   }
 
+  async function getAllTreasuries() {
+    const { ethereum } = window;
+
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      //create contract instance
+      const treasuryManagerContractInstance = new ethers.Contract(
+        treasuryContractAddress,
+        treasuryManagerABI,
+        signer
+      );
+
+      // call getTreasuries function to get all the treasuries contract addresses
+      const allTreasuriesAddresses =
+        await treasuryManagerContractInstance.getTresuries();
+
+      //call getTreasuriesData function to get all data of each treasury
+      const allTreasuries =
+        await treasuryManagerContractInstance.getTreasuriesData(
+          allTreasuriesAddresses
+        );
+
+      // declare new array
+      let new_treasuries = [];
+
+      //iterate and loop through the data retrieve from the blockchain
+      for (let i = 0; i < allTreasuries.description.length; i++) {
+        let title: string = allTreasuries.title[i];
+        let description: string = allTreasuries.description[i];
+        let treasurySCAddress: string = allTreasuriesAddresses[i];
+        //circle business account blockchain address
+        //circle wallet ID of business account
+
+        let newItem: Treasury = {
+          title,
+          description,
+          treasurySCAddress,
+        };
+        new_treasuries.push(newItem);
+      }
+
+      setTreasuries(new_treasuries);
+      console.log(new_treasuries);
+    }
+  }
+
   useEffect(() => {
     connectWallet();
+    getAllTreasuries();
   }, []);
 
   return (
@@ -91,7 +155,65 @@ export default function Home() {
             Explore Accounts
           </div>
 
-          <div className={styles.homePageContainers}>
+          <div>
+            {treasuries.length === 0 ? (
+              <div className={styles.homePageEmptyContainer}>
+                <h2
+                  className={styles.createBusinessAccountText}
+                  style={{ textAlign: "center" }}
+                >
+                  <div>{`No Business Account created`}</div>
+                </h2>
+                <div
+                  style={{
+                    color: "black",
+                    paddingLeft: "25px",
+                    paddingTop: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {`Create 1 by clicking on Create button above`}
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {treasuries.map((treasury) => {
+                  return (
+                    <>
+                      <div className={styles.homePageContainers}>
+                        <h2 className={styles.createBusinessAccountText}>
+                          <div>{`${treasury.title}`}</div>
+                        </h2>
+                        <div
+                          style={{
+                            color: "black",
+                            paddingLeft: "25px",
+                            paddingTop: "10px",
+                            //textAlign: "center",
+                          }}
+                        >
+                          {`${treasury.description}`}
+                        </div>
+                        <div className={styles.homePageButtonContainer}>
+                          <Link
+                            href={`/myBusiness?param1=${treasury.treasurySCAddress}`}
+                          >
+                            <button
+                              className={styles.goToCreateBusinessPageBtn}
+                            >
+                              View
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* <div className={styles.homePageContainers}>
             <h2 className={styles.createBusinessAccountText}>
               <div>{`Business Account 1`}</div>
             </h2>
@@ -112,7 +234,7 @@ export default function Home() {
                 </button>
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

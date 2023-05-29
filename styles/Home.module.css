@@ -45,6 +45,13 @@
   border-radius: 15px;
 }
 
+.homePageEmptyContainer {
+  background-color: white;
+  padding-bottom: 20px;
+  margin: 10px;
+  border-radius: 15px;
+}
+
 .myBusinessPageContainer {
   background-color: white;
   /* width:400px; */
