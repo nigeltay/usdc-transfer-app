@@ -9,6 +9,11 @@ import styles from "../../styles/Home.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
 
+//ABIs
+import usdcABI from "../../utils/USDC.json";
+import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import treasuryABI from "../../utils/treasuryABI.json";
+
 export default function Home() {
   const router = useRouter();
 
@@ -17,9 +22,15 @@ export default function Home() {
   const [description, setDescription] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [targetWalletAddress, setTargetWalletAddress] = useState<string>("");
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
+
+  //router query items
+  const treasurySCAddress = router.query.treasuryAddress as string;
+  const treasuryUSDCBalance = router.query.treasuryUSDCBalance as string;
+  console.log(treasurySCAddress, treasuryUSDCBalance);
 
   function openModal() {
     setIsLoading(true);
@@ -28,6 +39,16 @@ export default function Home() {
   function closeModal() {
     setIsLoading(false);
   }
+  const goToHomepage = () => {
+    router.push({
+      pathname: "/",
+      //   query: { params1: "test" }, //send data to page
+    });
+  };
+
+  const goBack = () => {
+    router.back();
+  };
 
   //connect metamask wallet
   async function connectWallet() {
@@ -52,12 +73,87 @@ export default function Home() {
     setCurrentWalletAddress(walletAddr);
   }
 
-  const goToHomepage = () => {
-    router.push({
-      pathname: "/",
-      //   query: { params1: "test" }, //send data to page
-    });
-  };
+  async function createProposal() {
+    //TODO: check if balance of treasury <= to withdraw amount
+
+    //validate field
+    if (!title) {
+      return alert("Title field is empty. ");
+    }
+
+    if (!description) {
+      return alert("Description field is empty. ");
+    }
+
+    if (!targetWalletAddress) {
+      return alert("Target Wallet Address field is empty. ");
+    }
+
+    if (!withdrawAmount) {
+      return alert("USDC Amount is empty. ");
+    }
+
+    if (
+      parseFloat(withdrawAmount) == null ||
+      Number.isNaN(parseFloat(withdrawAmount))
+    ) {
+      return alert("USDC Amount must be a number. ");
+    }
+
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        setLoadedData("Creating Proposal...Please wait");
+        openModal();
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        //create contract instance
+        const treasuryManagerContractInstance = new ethers.Contract(
+          treasurySCAddress,
+          treasuryManagerABI,
+          signer
+        );
+
+        //call createWithdrawProposal from the smart contract
+        let { hash } =
+          await treasuryManagerContractInstance.createWithdrawProposal(
+            treasurySCAddress,
+            title,
+            description,
+            ethers.utils.parseUnits(withdrawAmount, 6),
+            targetWalletAddress,
+            {
+              gasLimit: 2000000,
+            }
+          );
+
+        //wait for transaction to be mined
+        await provider.waitForTransaction(hash);
+
+        //display alert message
+        alert(`Transaction sent! Hash: ${hash}`);
+
+        //close modal
+        closeModal();
+
+        //clear fields
+        setDescription("");
+        setTitle("");
+        setWithdrawAmount("");
+        setTargetWalletAddress("");
+
+        //redirect back to previous page
+        goBack();
+      }
+    } catch (error) {
+      closeModal();
+      alert(`Error: ${error}`);
+      console.error("Error:", error);
+    }
+  }
 
   const customStyles = {
     content: {
@@ -132,7 +228,7 @@ export default function Home() {
             >
               <div style={{ marginTop: "20px", marginLeft: "25px" }}>
                 <div style={{ marginBottom: "10px" }}>
-                  <label>Proposal Ttile</label>
+                  <label>Proposal Title</label>
                 </div>
 
                 <input
@@ -191,7 +287,31 @@ export default function Home() {
                   }}
                 />
 
-                <button className={styles.backBtn} onClick={goToHomepage}>
+                <div style={{ marginBottom: "10px" }}>
+                  <label>Withdraw Amount</label>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Enter withdraw amount"
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  value={withdrawAmount}
+                  style={{
+                    padding: "15px",
+                    textAlign: "center",
+                    display: "block",
+                    backgroundColor: "white",
+                    color: "black",
+                    width: "600px",
+                    marginBottom: "10px",
+                  }}
+                />
+
+                <button className={styles.backBtn} onClick={createProposal}>
+                  Create Proposal
+                </button>
+
+                <button className={styles.backBtn} onClick={goBack}>
                   Back
                 </button>
               </div>

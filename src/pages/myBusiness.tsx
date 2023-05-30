@@ -12,6 +12,7 @@ import { Treasury } from "@/app/page";
 //ABIs
 import usdcABI from "../../utils/USDC.json";
 import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import treasuryABI from "../../utils/treasuryABI.json";
 
 export type Proposal = {
   title: string;
@@ -22,22 +23,25 @@ export type Proposal = {
   noOfYesVotes: number;
   noOfNoVotes: number;
   proposerAddress: string; //??
+  proposalContractAddress: string;
 };
 
 export default function Home() {
   const router = useRouter();
 
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
-  const [apiKey, setApiKey] = useState<string>("");
 
   const [joinedTreasury, setHasJoinedTreasury] = useState<boolean>(false);
   const [treasuryUSDCBalance, setTreasuryUSDCBalance] =
-    useState<string>("$0.00");
+    useState<string>("0.00");
   const [USDCAmount, setUSDCAmount] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+
+  // router params items
   const address = router.query.address as string;
   const description = router.query.description as string;
   const title = router.query.title as string;
@@ -160,35 +164,66 @@ export default function Home() {
     }
   }
 
-  // async function getProposalData() {
-  //   const { ethereum } = window;
+  async function getProposalData() {
+    const value = 2.5;
+    const bigNumberValue = ethers.utils.parseUnits(value.toString(), 6);
+    console.log(bigNumberValue);
+    const { ethereum } = window;
 
-  //   try {
-  //     if (ethereum) {
-  //       const provider = new ethers.providers.Web3Provider(ethereum);
-  //       const signer = provider.getSigner();
-  //       if (urlObject.treasurySCAddress != undefined) {
-  //         console.log(urlObject.treasurySCAddress);
-  //         //create contract instance
-  //         const treasuryManagerContractInstance = new ethers.Contract(
-  //           urlObject.treasurySCAddress,
-  //           treasuryManagerABI,
-  //           signer
-  //         );
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        if (urlObject.treasurySCAddress != undefined) {
+          console.log(urlObject.treasurySCAddress);
+          //create contract instance
+          const treasuryContractInstance = new ethers.Contract(
+            urlObject.treasurySCAddress,
+            treasuryABI,
+            signer
+          );
 
-  //         // call getTreasuries function to get all the treasuries contract addresses
-  //         const allProposalAddresses =
-  //           await treasuryManagerContractInstance.getProposals(
-  //             urlObject.treasurySCAddress
-  //           );
+          const proposalAddresses =
+            await treasuryContractInstance.getProposals();
+          const allProposalData =
+            await treasuryContractInstance.getProposalData(proposalAddresses);
 
-  //         console.log(allProposalAddresses);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     alert(`Error: ${error}`);
-  //   }
-  // }
+          // declare new array
+          let new_proposals = [];
+
+          //iterate and loop through the data retrieve from the blockchain
+          for (let i = 0; i < allProposalData.proposalDescription.length; i++) {
+            let title: string = allProposalData.proposalTitle[i];
+            let description: string = allProposalData.proposalDescription[i];
+            let withdrawAmount: number = allProposalData.withdrawAmount[i];
+            let targetWalletAddress: string = allProposalData.withdrawWallet[i];
+            let status: string = allProposalData.status[i];
+            let noOfYesVotes: number = allProposalData.numberOfYesVotes[i];
+            let noOfNoVotes: number = allProposalData.numberOfNoVotes[i];
+            let proposerAddress: string = allProposalData.proposerAddress[i]; //??
+            let proposalContractAddress: string = proposalAddresses[i];
+
+            let newProposalItem: Proposal = {
+              title,
+              description,
+              withdrawAmount,
+              targetWalletAddress,
+              status,
+              noOfYesVotes,
+              noOfNoVotes,
+              proposerAddress,
+              proposalContractAddress,
+            };
+            new_proposals.push(newProposalItem);
+          }
+          setProposals(new_proposals);
+          console.log(new_proposals);
+        }
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  }
 
   async function transferUSDC() {
     //validate fields
@@ -215,7 +250,7 @@ export default function Home() {
     try {
       const { ethereum } = window;
       if (ethereum) {
-        setLoadedData("approving USDC to be spend...Please wait");
+        setLoadedData("Approving USDC to be spend...Please wait");
         openModal();
 
         const provider = new ethers.providers.Web3Provider(ethereum);
@@ -250,7 +285,7 @@ export default function Home() {
         const usdcTransferTxn = await usdcContractInstance.transferFrom(
           currentWalletAddress,
           recipientAddress,
-          ethers.utils.parseUnits(USDCAmount, 6), //todo: get amount from variable, example tranfer 1 usdc
+          ethers.utils.parseUnits(USDCAmount, 6),
           {
             gasLimit: 100000,
           }
@@ -289,10 +324,10 @@ export default function Home() {
         const USDCbalance = getWalletBalanceResponseData.balances;
 
         if (USDCbalance.length === 0) {
-          setTreasuryUSDCBalance("$0.00");
+          setTreasuryUSDCBalance("0.00");
         } else {
           //todo: filter by USD currnecy
-          setTreasuryUSDCBalance(`$${USDCbalance[0].amount}`);
+          setTreasuryUSDCBalance(`${USDCbalance[0].amount}`);
         }
       }
     } catch (error) {
@@ -331,9 +366,13 @@ export default function Home() {
     });
   };
 
-  const goToCreateProposalPage = () => {
+  const goToCreateProposalPage = (
+    treasuryContractAddr: string,
+    treasuryUSDCBalance: string
+  ) => {
     router.push({
-      pathname: "/createProposal",
+      pathname: `/createProposal`,
+      query: { treasuryAddress: treasuryContractAddr, treasuryUSDCBalance },
     });
   };
 
@@ -353,7 +392,7 @@ export default function Home() {
     connectWallet();
     hasUserJoinedTreasury();
     getUSDCBalance();
-    // getProposalData();
+    getProposalData();
   }, [router.query, isLoading]);
 
   return (
@@ -428,18 +467,48 @@ export default function Home() {
                     //textAlign: "center",
                   }}
                 >
-                  {`0 Proposals Created`}
+                  {`${proposals.length} Proposals Created`}
                 </div>
                 <div>
                   {joinedTreasury === false ? null : (
                     <button
                       className={styles.createProposalBtn}
-                      onClick={goToCreateProposalPage}
+                      onClick={() =>
+                        goToCreateProposalPage(
+                          urlObject.treasurySCAddress,
+                          treasuryUSDCBalance
+                        )
+                      }
                     >
                       New Proposal
                     </button>
                   )}
                 </div>
+              </div>
+              <div>
+                {proposals.length === 0 ? null : (
+                  <>
+                    <div className={styles.listProposalContainer}>
+                      {proposals.map((proposal) => {
+                        return (
+                          <>
+                            <div className={styles.proposalsContainer}>
+                              <h2 className={styles.createBusinessAccountText}>
+                                <div>{proposal.title}</div>
+                              </h2>
+                              <div
+                                className={styles.nonBoldText}
+                              >{`${proposal.description}`}</div>
+                              <div
+                                className={styles.nonBoldText}
+                              >{`proposed by: ${proposal.proposerAddress}`}</div>
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -458,7 +527,7 @@ export default function Home() {
                     //textAlign: "center",
                   }}
                 >
-                  {`${treasuryUSDCBalance}`}
+                  {`$${treasuryUSDCBalance}`}
                   <div className={styles.buttonContainer}>
                     {joinedTreasury === false ? null : (
                       <>
