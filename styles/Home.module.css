@@ -38,6 +38,14 @@
   /* text-align: center; */
 }
 
+.nonBoldText {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: black;
+  padding-left: 25px;
+  padding-top: 20px;
+ 
+}
+
 .homePageContainers {
   background-color: white;
   width: 400px;
@@ -68,6 +76,7 @@
   padding-bottom: 20px;
   padding-right: 20px;
   border-radius: 15px;
+  height: 120px;
 }
 
 .createProposalContainer {
@@ -102,6 +111,7 @@
 
 .buttonContainer {
   display: flex;
+  margin-top: 20px;
 }
 
 .createPostText {
@@ -192,6 +202,27 @@
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
+  width: 120px;
+}
+
+.fundBtn {
+  background-color: blue;
+  color: white;
+  margin-left: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 120px;
+}
+
+.joinBtn {
+  background-color: rgb(232, 166, 42);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 120px;
 }
 
 .createBusinessBtn {

@@ -8,17 +8,51 @@ import styles from "../../styles/Home.module.css";
 // import uuid from "uuid-random";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { Treasury } from "@/app/page";
+//ABIs
+import usdcABI from "../../utils/USDC.json";
+import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+
+export type Proposal = {
+  title: string;
+  description: string;
+  withdrawAmount: number;
+  targetWalletAddress: string;
+  status: string;
+  noOfYesVotes: number;
+  noOfNoVotes: number;
+  proposerAddress: string; //??
+};
 
 export default function Home() {
   const router = useRouter();
 
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
-  const [currentBalance, setCurrentBalance] = useState<string>("");
+
+  const [joinedTreasury, setHasJoinedTreasury] = useState<boolean>(false);
+  const [treasuryUSDCBalance, setTreasuryUSDCBalance] =
+    useState<string>("$0.00");
+  const [USDCAmount, setUSDCAmount] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
 
+  const address = router.query.address as string;
+  const description = router.query.description as string;
+  const title = router.query.title as string;
+  const walletId = router.query.walletId as string;
+  const depositTreasuryWalletAddress = router.query
+    .depositTreasuryWalletAddress as string;
+
+  const urlObject: Treasury = {
+    title,
+    description,
+    treasurySCAddress: address,
+    depositTreasuryWalletAddress,
+    walletId,
+  };
+  // console.log(urlObject);
   function openModal() {
     setIsLoading(true);
   }
@@ -29,9 +63,6 @@ export default function Home() {
 
   //connect metamask wallet
   async function connectWallet() {
-    //get value from url query
-    // console.log(router.query);
-
     //connect metamask account on page enter
     const { ethereum } = window;
 
@@ -46,14 +77,251 @@ export default function Home() {
     });
     // Get the first account address
     const walletAddr = accounts[0];
-    // Get account balance
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const balance = await provider.getBalance(walletAddr);
-    const balanceAvax = ethers.utils.formatEther(balance);
-    // Set to variable to store account balance
-    setCurrentBalance(balanceAvax);
+    // // Get account balance
+    // const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // const balance = await provider.getBalance(walletAddr);
+    // const balanceAvax = ethers.utils.formatEther(balance);
+    // // Set to variable to store account balance
+    // setCurrentBalance(balanceAvax);
     //set to variable to store current wallet address
     setCurrentWalletAddress(walletAddr);
+  }
+
+  async function hasUserJoinedTreasury() {
+    const { ethereum } = window;
+
+    try {
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        // console.log(urlObject);
+
+        if (urlObject.treasurySCAddress != undefined) {
+          //create contract instance
+          const treasuryManagerContractInstance = new ethers.Contract(
+            urlObject.treasurySCAddress,
+            treasuryManagerABI,
+            signer
+          );
+
+          //check if user has joined the treasury
+          const isMember =
+            await treasuryManagerContractInstance.hasJoinedTreasury(
+              urlObject.treasurySCAddress
+            );
+          // console.log(isMember);
+          setHasJoinedTreasury(isMember);
+        }
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  }
+
+  async function joinTreasury() {
+    try {
+      setLoadedData("Joining as member ...Please wait");
+      openModal();
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        //create contract instance
+        const treasuryManagerContractInstance = new ethers.Contract(
+          urlObject.treasurySCAddress,
+          treasuryManagerABI,
+          signer
+        );
+
+        //call joinTreasury from the smart contract
+        let { hash } = await treasuryManagerContractInstance.joinTreasury(
+          urlObject.treasurySCAddress,
+          {
+            gasLimit: 1200000,
+          }
+        );
+
+        //wait for transaction to be mined
+        await provider.waitForTransaction(hash);
+
+        //display alert message
+        alert(`Transaction sent! Hash: ${hash}`);
+
+        //close modal
+        closeModal();
+      }
+    } catch (error) {
+      closeModal();
+      alert(`Error: ${error}`);
+      return `${error}`;
+    }
+  }
+
+  // async function getProposalData() {
+  //   const { ethereum } = window;
+
+  //   try {
+  //     if (ethereum) {
+  //       const provider = new ethers.providers.Web3Provider(ethereum);
+  //       const signer = provider.getSigner();
+  //       if (urlObject.treasurySCAddress != undefined) {
+  //         console.log(urlObject.treasurySCAddress);
+  //         //create contract instance
+  //         const treasuryManagerContractInstance = new ethers.Contract(
+  //           urlObject.treasurySCAddress,
+  //           treasuryManagerABI,
+  //           signer
+  //         );
+
+  //         // call getTreasuries function to get all the treasuries contract addresses
+  //         const allProposalAddresses =
+  //           await treasuryManagerContractInstance.getProposals(
+  //             urlObject.treasurySCAddress
+  //           );
+
+  //         console.log(allProposalAddresses);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     alert(`Error: ${error}`);
+  //   }
+  // }
+
+  async function transferUSDC() {
+    //validate fields
+
+    if (!USDCAmount) {
+      return alert("USDC Amount field is empty. ");
+    }
+
+    if (
+      parseFloat(USDCAmount) == null ||
+      Number.isNaN(parseFloat(USDCAmount))
+    ) {
+      return alert("USDC Amount must be a number. ");
+    }
+
+    if (parseFloat(USDCAmount) == null || parseFloat(USDCAmount) == undefined) {
+      return alert("USDC Amount must be a number. ");
+    }
+
+    // Replace with your own values
+    const usdcContractAddress = "0x5425890298aed601595a70AB815c96711a31Bc65"; // USDC contract address on Avalanche testnet
+    const recipientAddress = urlObject.depositTreasuryWalletAddress;
+
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        setLoadedData("approving USDC to be spend...Please wait");
+        openModal();
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        //create contract instance
+        const usdcContractInstance = new ethers.Contract(
+          usdcContractAddress,
+          usdcABI,
+          signer
+        );
+
+        // approve USDC tokens before transfer
+        const approveUsdcTxn = await usdcContractInstance.approve(
+          currentWalletAddress,
+          ethers.utils.parseUnits(USDCAmount, 6), //amount is a placeholder, amount is set when metamask pop-up shows
+          {
+            gasLimit: 1200000,
+          }
+        );
+
+        // Wait for the transaction to be mined
+        await approveUsdcTxn.wait();
+        alert(`Transaction sent! Hash: ${approveUsdcTxn.hash}`);
+
+        closeModal();
+
+        setLoadedData("Sending USDC...Please wait");
+        openModal();
+
+        // Transfer USDC tokens
+        const usdcTransferTxn = await usdcContractInstance.transferFrom(
+          currentWalletAddress,
+          recipientAddress,
+          ethers.utils.parseUnits(USDCAmount, 6), //todo: get amount from variable, example tranfer 1 usdc
+          {
+            gasLimit: 100000,
+          }
+        );
+
+        // Wait for the transaction to be mined
+        await usdcTransferTxn.wait();
+        alert(`Transaction sent! Hash: ${usdcTransferTxn.hash}`);
+
+        closeModal();
+        setUSDCAmount("");
+      }
+    } catch (error) {
+      closeModal();
+      alert(`Error: ${error}`);
+      console.error("Error:", error);
+    }
+  }
+
+  async function getUSDCBalance() {
+    const apiKey = process.env.NEXT_PUBLIC_CIRCLE_API_KEY;
+    // console.log(apiKey);
+
+    try {
+      if (urlObject.treasurySCAddress != undefined) {
+        //call nextjs API endpoint to get wallet balance
+        const getWalletBalance = await axios.post("/api/getWalletBalance", {
+          apiKey: apiKey,
+          walletId: urlObject.walletId,
+        });
+
+        const getWalletBalanceResponseData =
+          getWalletBalance.data.responseData.data;
+        // console.log(getWalletBalanceResponseData.balances);
+
+        const USDCbalance = getWalletBalanceResponseData.balances;
+
+        if (USDCbalance.length === 0) {
+          setTreasuryUSDCBalance("$0.00");
+        } else {
+          //todo: filter by USD currnecy
+          setTreasuryUSDCBalance(`$${USDCbalance[0].amount}`);
+        }
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+
+    //sample output reponse
+    //   {
+    //     "data": {
+    //         "walletId": "1016283032",
+    //         "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
+    //         "type": "end_user_wallet",
+    //         "description": "testing wallet",
+    //         "balances": []
+    //     }
+    // }
+
+    //   {
+    //     "walletId": "1013946635",
+    //     "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
+    //     "type": "end_user_wallet",
+    //     "description": "Lesson 7 practical",
+    //     "balances": [
+    //         {
+    //             "amount": "1.00",
+    //             "currency": "USD"
+    //         }
+    //     ]
+    // }
   }
 
   const goToHomepage = () => {
@@ -83,7 +351,10 @@ export default function Home() {
 
   useEffect(() => {
     connectWallet();
-  }, []);
+    hasUserJoinedTreasury();
+    getUSDCBalance();
+    // getProposalData();
+  }, [router.query, isLoading]);
 
   return (
     <>
@@ -108,7 +379,7 @@ export default function Home() {
         <div style={{ marginLeft: "100px", marginRight: "100px" }}>
           <div className={styles.myBusinessPageContainer}>
             <h2 className={styles.createBusinessAccountText}>
-              <div>{`My Sample Business Account`}</div>
+              <div>{`${urlObject.title}`}</div>
             </h2>
             <div
               style={{
@@ -124,7 +395,7 @@ export default function Home() {
                   //textAlign: "center",
                 }}
               >
-                {`Dummy Description.....`}
+                {`${urlObject.description}`}
               </div>
               <div>
                 <button
@@ -160,31 +431,86 @@ export default function Home() {
                   {`0 Proposals Created`}
                 </div>
                 <div>
-                  <button
-                    className={styles.createProposalBtn}
-                    onClick={goToCreateProposalPage}
-                  >
-                    New Proposal
-                  </button>
+                  {joinedTreasury === false ? null : (
+                    <button
+                      className={styles.createProposalBtn}
+                      onClick={goToCreateProposalPage}
+                    >
+                      New Proposal
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className={styles.balanceSectionContainer}>
-              <h2 className={styles.createBusinessAccountText}>
-                <div>{`Balance (AVAX)`}</div>
-              </h2>
-              <div
-                style={{
-                  color: "black",
-                  paddingLeft: "25px",
-                  paddingTop: "10px",
-                  //textAlign: "center",
-                }}
-              >
-                {`${currentBalance}`}
+            <div>
+              <div className={styles.balanceSectionContainer}>
+                <h2 className={styles.createBusinessAccountText}>
+                  <div>{`Business account balance (USDC)`}</div>
+                </h2>
+                <div
+                  style={{
+                    color: "black",
+                    paddingLeft: "25px",
+                    paddingTop: "10px",
+                    // display: "flex",
+                    // justifyContent: "space-between",
+                    //textAlign: "center",
+                  }}
+                >
+                  {`${treasuryUSDCBalance}`}
+                  <div className={styles.buttonContainer}>
+                    {joinedTreasury === false ? null : (
+                      <>
+                        <input
+                          type="text"
+                          placeholder="Add USDC amount to transfer"
+                          onChange={(e) => setUSDCAmount(e.target.value)}
+                          value={USDCAmount}
+                          style={{
+                            padding: "15px",
+                            textAlign: "center",
+                            display: "block",
+                            backgroundColor: "white",
+                            color: "black",
+                            // width: "600px",
+                            // marginBottom: "10px",
+                          }}
+                        />
+                        <button
+                          className={styles.fundBtn}
+                          onClick={transferUSDC}
+                        >
+                          Fund
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className={styles.buttonContainer}></div>
+              <div className={styles.balanceSectionContainer}>
+                <h2 className={styles.createBusinessAccountText}>
+                  <div>{`Member`}</div>
+                </h2>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  {joinedTreasury === false ? (
+                    <>
+                      <div className={styles.nonBoldText}>{`Not a member`}</div>
+                      <button className={styles.joinBtn} onClick={joinTreasury}>
+                        Join
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className={styles.nonBoldText}
+                      >{`Joined as Member`}</div>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

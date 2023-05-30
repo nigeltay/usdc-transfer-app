@@ -10,6 +10,16 @@
 				"internalType": "string",
 				"name": "_description",
 				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "_depositAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_walletID",
+				"type": "string"
 			}
 		],
 		"name": "createTreasury",
@@ -23,32 +33,29 @@
 				"internalType": "address",
 				"name": "_treasuryAddress",
 				"type": "address"
-			}
-		],
-		"name": "joinTreasury",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+			},
 			{
-				"internalType": "address",
-				"name": "_treasuryAddress",
-				"type": "address"
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_description",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_withdrawAmount",
+				"type": "uint256"
 			},
 			{
 				"internalType": "address",
-				"name": "_proposalAddress",
+				"name": "_withdrawWallet",
 				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isVoteYes",
-				"type": "bool"
 			}
 		],
-		"name": "voteOnWithdrawProposal",
+		"name": "createWithdrawProposal",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -102,6 +109,11 @@
 				"internalType": "uint256[]",
 				"name": "numberOfNoVotes",
 				"type": "uint256[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "withdrawWallet",
+				"type": "address[]"
 			}
 		],
 		"stateMutability": "view",
@@ -127,6 +139,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getTreasuries",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "_treasuryAddresses",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address[]",
@@ -145,19 +170,35 @@
 				"internalType": "string[]",
 				"name": "description",
 				"type": "string[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "depositAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "walletID",
+				"type": "string[]"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "getTresuries",
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			}
+		],
+		"name": "hasJoinedTreasury",
 		"outputs": [
 			{
-				"internalType": "address[]",
-				"name": "_treasuryAddresses",
-				"type": "address[]"
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -185,6 +226,19 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			}
+		],
+		"name": "joinTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -223,6 +277,35 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_proposalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isVoteYes",
+				"type": "bool"
+			}
+		],
+		"name": "voteOnWithdrawProposal",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

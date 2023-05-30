@@ -10,16 +10,16 @@ import styles from "../../styles/Home.module.css";
 //ABIs
 import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
 
-type Treasury = {
+export type Treasury = {
   title: string;
   description: string;
   treasurySCAddress: string;
-  //businessAccountAddress
-  //businessAccountWalletId
+  depositTreasuryWalletAddress: string;
+  walletId: string;
 };
 
 export default function Home() {
-  const treasuryContractAddress = "0xE2292c7c0d70FF50A9e123716F90EAfa4178be41"; //TODO: put into env file
+  const treasuryContractAddress = "0x70Fd5e496D0Eb0F3437B658Fa1a66D6BD458C5AA"; //TODO: put into env file
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
   const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -59,7 +59,7 @@ export default function Home() {
 
       // call getTreasuries function to get all the treasuries contract addresses
       const allTreasuriesAddresses =
-        await treasuryManagerContractInstance.getTresuries();
+        await treasuryManagerContractInstance.getTreasuries();
 
       //call getTreasuriesData function to get all data of each treasury
       const allTreasuries =
@@ -75,13 +75,16 @@ export default function Home() {
         let title: string = allTreasuries.title[i];
         let description: string = allTreasuries.description[i];
         let treasurySCAddress: string = allTreasuriesAddresses[i];
-        //circle business account blockchain address
-        //circle wallet ID of business account
+        let depositTreasuryWalletAddress: string =
+          allTreasuries.depositAddress[i];
+        let walletId: string = allTreasuries.walletID[i];
 
         let newItem: Treasury = {
           title,
           description,
           treasurySCAddress,
+          depositTreasuryWalletAddress,
+          walletId,
         };
         new_treasuries.push(newItem);
       }
@@ -143,7 +146,7 @@ export default function Home() {
             business to make contributions.`}
             </div>
             <div className={styles.homePageButtonContainer}>
-              <Link href={`/createBusiness`}>
+              <Link href={`/createBusiness?address=${treasuryContractAddress}`}>
                 <button className={styles.goToCreateBusinessPageBtn}>
                   Create
                 </button>
@@ -196,7 +199,7 @@ export default function Home() {
                         </div>
                         <div className={styles.homePageButtonContainer}>
                           <Link
-                            href={`/myBusiness?param1=${treasury.treasurySCAddress}`}
+                            href={`/myBusiness?address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
                           >
                             <button
                               className={styles.goToCreateBusinessPageBtn}
