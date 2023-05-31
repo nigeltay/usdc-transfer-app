@@ -313,7 +313,11 @@ export default function Home() {
                   }}
                 />
 
-                <button className={styles.backBtn} onClick={createProposal}>
+                <button
+                  className={styles.backBtn}
+                  style={{ backgroundColor: "blue" }}
+                  onClick={createProposal}
+                >
                   Create Proposal
                 </button>
 

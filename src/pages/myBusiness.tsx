@@ -112,10 +112,8 @@ export default function Home() {
               urlObject.treasurySCAddress,
               currentWalletAddress
             );
-
+          console.log(isMember);
           setHasJoinedTreasury(isMember);
-
-          await hasUserJoinedTreasury();
         }
       }
     } catch (error) {
@@ -155,6 +153,9 @@ export default function Home() {
 
         //display alert message
         alert(`Transaction sent! Hash: ${hash}`);
+
+        //update and check if user joined the treasury
+        await hasUserJoinedTreasury();
 
         //close modal
         closeModal();
