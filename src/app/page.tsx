@@ -19,7 +19,7 @@ export type Treasury = {
 };
 
 export default function Home() {
-  const treasuryContractAddress = "0xe7E827c04B5af67392647963e29B6e546DaFb431"; //TODO: put into env file
+  const treasuryContractAddress = "0xCBbce17e13C5d4C3397f6DF376d06c70223bccB5"; //TODO: put into env file
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
   const [treasuries, setTreasuries] = useState<Treasury[]>([]);

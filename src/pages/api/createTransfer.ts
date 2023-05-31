@@ -12,15 +12,15 @@ export default async function handler(
     idempotencyKey: uuid(),
     source: {
       type: "wallet",
-      id: "1012630045", //business account wallet ID
+      id: walletId, //business account wallet ID
     },
     destination: {
       type: "blockchain",
-      address: "0x251b00f8d6ec75e282080265d24d1e6592dd6ee6", //target walletId or blockchain address
-      chain: "ETH",
+      address: targetAddress, //target walletId or blockchain address
+      chain: "AVAX",
     },
     amount: {
-      amount: "10.00", //transfer all the USDC amount the treasury has
+      amount: amount, //transfer all the USDC amount the treasury has
       currency: "USD",
     },
   });

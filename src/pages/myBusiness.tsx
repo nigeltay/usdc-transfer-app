@@ -21,7 +21,7 @@ export type Proposal = {
   status: string;
   noOfYesVotes: number;
   noOfNoVotes: number;
-  proposerAddress: string; //??
+  proposerAddress: string;
   proposalContractAddress: string;
 };
 
@@ -41,7 +41,7 @@ export default function Home() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
 
   // router params items
-  const address = router.query.address as string;
+  const treasuryAddress = router.query.address as string;
   const treasuryManagerAddress = router.query.managerAddress as string;
   const description = router.query.description as string;
   const title = router.query.title as string;
@@ -52,7 +52,7 @@ export default function Home() {
   const urlObject: Treasury = {
     title,
     description,
-    treasurySCAddress: address,
+    treasurySCAddress: treasuryAddress,
     depositTreasuryWalletAddress,
     walletId,
   };
@@ -367,6 +367,32 @@ export default function Home() {
     });
   };
 
+  const goToProposalDetailsPage = (proposalAddress: string) => {
+    if (joinedTreasury === true) {
+      router.push({
+        pathname: "/proposalDetails",
+        query: {
+          treasuryAddress: treasuryAddress,
+          treasuryManagerAddress,
+          proposalAddress,
+          walletId,
+        }, //send data to page
+      });
+    } else {
+      alert(`Join as a member to view proposal details`);
+    }
+  };
+
+  function getColour(status: string) {
+    if (status === "Voting") {
+      return "black";
+    } else if (status === "Success") {
+      return "green";
+    } else {
+      return "red";
+    }
+  }
+
   const goToCreateProposalPage = (
     treasuryContractAddr: string,
     treasuryUSDCBalance: string
@@ -497,13 +523,35 @@ export default function Home() {
                       {proposals.map((proposal) => {
                         return (
                           <>
-                            <div className={styles.proposalsContainer}>
-                              <div className={styles.proposalStatusText}>
-                                {proposal.status}
+                            <div
+                              className={styles.proposalsContainer}
+                              onClick={() =>
+                                goToProposalDetailsPage(
+                                  proposal.proposalContractAddress
+                                )
+                              }
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <h2
+                                  className={styles.createBusinessAccountText}
+                                >
+                                  <div>{proposal.title}</div>
+                                </h2>
+                                <div
+                                  className={styles.proposalStatusText}
+                                  style={{
+                                    backgroundColor: getColour(proposal.status),
+                                  }}
+                                >
+                                  {proposal.status}
+                                </div>
                               </div>
-                              <h2 className={styles.createBusinessAccountText}>
-                                <div>{proposal.title}</div>
-                              </h2>
+
                               <div
                                 className={styles.nonBoldText}
                               >{`${proposal.description}`}</div>
