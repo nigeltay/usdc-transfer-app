@@ -114,6 +114,8 @@ export default function Home() {
             );
 
           setHasJoinedTreasury(isMember);
+
+          await hasUserJoinedTreasury();
         }
       }
     } catch (error) {
@@ -397,14 +399,20 @@ export default function Home() {
     treasuryContractAddr: string,
     treasuryUSDCBalance: string
   ) => {
-    router.push({
-      pathname: `/createProposal`,
-      query: {
-        treasuryManagerAddress,
-        treasuryAddress: treasuryContractAddr,
-        treasuryUSDCBalance,
-      },
-    });
+    if (treasuryUSDCBalance === "0.00") {
+      alert(
+        `Please fund the account with some USDC before creating a proposal.`
+      );
+    } else {
+      router.push({
+        pathname: `/createProposal`,
+        query: {
+          treasuryManagerAddress,
+          treasuryAddress: treasuryContractAddr,
+          treasuryUSDCBalance,
+        },
+      });
+    }
   };
 
   const customStyles = {

@@ -219,7 +219,7 @@ export default function Home() {
 
         if (proposalData.noOfYesVotes === 1 && decision === true) {
           alert(
-            "There are 2 Yes votes in the proposal...Initiating transfer of USDC from business account to target wallet address"
+            "There are 2 Yes votes in the proposal...Initiating transfer of USDC from business account to target wallet address. Click Ok to continue."
           );
           setLoadedData("Sending USDC over... please wait");
           openModal();

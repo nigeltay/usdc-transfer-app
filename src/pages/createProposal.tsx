@@ -73,6 +73,7 @@ export default function Home() {
 
   async function createProposal() {
     //TODO: check if balance of treasury <= to withdraw amount
+    const businessAccountUSDCAmount = parseFloat(treasuryUSDCBalance);
 
     //validate field
     if (!title) {
@@ -96,6 +97,12 @@ export default function Home() {
       Number.isNaN(parseFloat(withdrawAmount))
     ) {
       return alert("USDC Amount must be a number. ");
+    }
+
+    if (parseFloat(withdrawAmount) > businessAccountUSDCAmount) {
+      return alert(
+        "USDC Amount cannot exceed your business account balance.  "
+      );
     }
 
     try {
