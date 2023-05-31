@@ -53,10 +53,67 @@
 				"internalType": "address",
 				"name": "_withdrawWallet",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_userWallet",
+				"type": "address"
 			}
 		],
 		"name": "createWithdrawProposal",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_userWallet",
+				"type": "address"
+			}
+		],
+		"name": "joinTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_proposalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isVoteYes",
+				"type": "bool"
+			},
+			{
+				"internalType": "address",
+				"name": "_userWallet",
+				"type": "address"
+			}
+		],
+		"name": "voteOnWithdrawProposal",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -191,6 +248,11 @@
 				"internalType": "address",
 				"name": "_treasuryAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_userWallet",
+				"type": "address"
 			}
 		],
 		"name": "hasJoinedTreasury",
@@ -215,6 +277,11 @@
 				"internalType": "address",
 				"name": "_proposalAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_userWallet",
+				"type": "address"
 			}
 		],
 		"name": "hasVoted",
@@ -226,19 +293,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_treasuryAddress",
-				"type": "address"
-			}
-		],
-		"name": "joinTreasury",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -277,35 +331,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_treasuryAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_proposalAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "_isVoteYes",
-				"type": "bool"
-			}
-		],
-		"name": "voteOnWithdrawProposal",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

@@ -19,7 +19,7 @@ export type Treasury = {
 };
 
 export default function Home() {
-  const treasuryContractAddress = "0x70Fd5e496D0Eb0F3437B658Fa1a66D6BD458C5AA"; //TODO: put into env file
+  const treasuryContractAddress = "0xe7E827c04B5af67392647963e29B6e546DaFb431"; //TODO: put into env file
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
   const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -41,6 +41,8 @@ export default function Home() {
     const walletAddr = accounts[0];
     //set to variable to store current wallet address
     setCurrentWalletAddress(walletAddr);
+
+    await getAllTreasuries();
   }
 
   async function getAllTreasuries() {
@@ -96,7 +98,6 @@ export default function Home() {
 
   useEffect(() => {
     connectWallet();
-    getAllTreasuries();
   }, []);
 
   return (
@@ -199,7 +200,7 @@ export default function Home() {
                         </div>
                         <div className={styles.homePageButtonContainer}>
                           <Link
-                            href={`/myBusiness?address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
+                            href={`/myBusiness?managerAddress=${treasuryContractAddress}&address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
                           >
                             <button
                               className={styles.goToCreateBusinessPageBtn}
@@ -215,29 +216,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          {/* <div className={styles.homePageContainers}>
-            <h2 className={styles.createBusinessAccountText}>
-              <div>{`Business Account 1`}</div>
-            </h2>
-            <div
-              style={{
-                color: "black",
-                paddingLeft: "25px",
-                paddingTop: "10px",
-                //textAlign: "center",
-              }}
-            >
-              {`Transfer USDC to this account for funding.`}
-            </div>
-            <div className={styles.homePageButtonContainer}>
-              <Link href={`/myBusiness?param1=value1`}>
-                <button className={styles.goToCreateBusinessPageBtn}>
-                  View
-                </button>
-              </Link>
-            </div>
-          </div> */}
         </div>
       </div>
     </>

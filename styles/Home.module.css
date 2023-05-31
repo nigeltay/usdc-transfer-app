@@ -11,7 +11,7 @@
   background-color: rgb(237, 237, 237);
   min-width: 500px;
   padding-bottom: 10px;
-  min-height: 950px;
+  min-height: 1250px;
 }
 
 .walletAddress {
@@ -36,6 +36,14 @@
   font-size: 1.2em;
   font-weight: bold;
   /* text-align: center; */
+}
+
+.proposalStatusText {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: green;
+  padding-left: 25px;
+  padding-top: 20px;
+  font-size: 0.75em;
 }
 
 .nonBoldText {
@@ -111,7 +119,14 @@
   padding-bottom: 20px;
   padding-right: 20px;
   border-radius: 15px;
+  cursor: pointer;
 }
+
+.proposalsContainer:hover {
+  opacity: 70%;
+  background-color: grey;
+}
+
 
 .imageContainer {
   display: flex;

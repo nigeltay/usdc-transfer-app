@@ -10,9 +10,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 //ABIs
-import usdcABI from "../../utils/USDC.json";
 import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
-import treasuryABI from "../../utils/treasuryABI.json";
 
 export default function Home() {
   const router = useRouter();
@@ -30,7 +28,7 @@ export default function Home() {
   //router query items
   const treasurySCAddress = router.query.treasuryAddress as string;
   const treasuryUSDCBalance = router.query.treasuryUSDCBalance as string;
-  console.log(treasurySCAddress, treasuryUSDCBalance);
+  const treasuryManagerAddress = router.query.treasuryManagerAddress as string;
 
   function openModal() {
     setIsLoading(true);
@@ -112,7 +110,7 @@ export default function Home() {
 
         //create contract instance
         const treasuryManagerContractInstance = new ethers.Contract(
-          treasurySCAddress,
+          treasuryManagerAddress,
           treasuryManagerABI,
           signer
         );
@@ -125,6 +123,7 @@ export default function Home() {
             description,
             ethers.utils.parseUnits(withdrawAmount, 6),
             targetWalletAddress,
+            currentWalletAddress,
             {
               gasLimit: 2000000,
             }

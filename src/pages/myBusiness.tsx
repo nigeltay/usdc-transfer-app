@@ -12,7 +12,6 @@ import { Treasury } from "@/app/page";
 //ABIs
 import usdcABI from "../../utils/USDC.json";
 import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
-import treasuryABI from "../../utils/treasuryABI.json";
 
 export type Proposal = {
   title: string;
@@ -43,6 +42,7 @@ export default function Home() {
 
   // router params items
   const address = router.query.address as string;
+  const treasuryManagerAddress = router.query.managerAddress as string;
   const description = router.query.description as string;
   const title = router.query.title as string;
   const walletId = router.query.walletId as string;
@@ -81,44 +81,43 @@ export default function Home() {
     });
     // Get the first account address
     const walletAddr = accounts[0];
-    // // Get account balance
-    // const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // const balance = await provider.getBalance(walletAddr);
-    // const balanceAvax = ethers.utils.formatEther(balance);
-    // // Set to variable to store account balance
-    // setCurrentBalance(balanceAvax);
-    //set to variable to store current wallet address
+
     setCurrentWalletAddress(walletAddr);
+
+    await hasUserJoinedTreasury();
   }
 
   async function hasUserJoinedTreasury() {
     const { ethereum } = window;
+    console.log(currentWalletAddress);
 
     try {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        // console.log(urlObject);
-
-        if (urlObject.treasurySCAddress != undefined) {
+        if (
+          urlObject.treasurySCAddress != undefined &&
+          currentWalletAddress !== ""
+        ) {
           //create contract instance
           const treasuryManagerContractInstance = new ethers.Contract(
-            urlObject.treasurySCAddress,
+            treasuryManagerAddress,
             treasuryManagerABI,
             signer
           );
 
-          //check if user has joined the treasury
           const isMember =
             await treasuryManagerContractInstance.hasJoinedTreasury(
-              urlObject.treasurySCAddress
+              urlObject.treasurySCAddress,
+              currentWalletAddress
             );
-          // console.log(isMember);
+
           setHasJoinedTreasury(isMember);
         }
       }
     } catch (error) {
+      console.error(error);
       alert(`Error: ${error}`);
     }
   }
@@ -135,7 +134,7 @@ export default function Home() {
 
         //create contract instance
         const treasuryManagerContractInstance = new ethers.Contract(
-          urlObject.treasurySCAddress,
+          treasuryManagerAddress,
           treasuryManagerABI,
           signer
         );
@@ -143,6 +142,7 @@ export default function Home() {
         //call joinTreasury from the smart contract
         let { hash } = await treasuryManagerContractInstance.joinTreasury(
           urlObject.treasurySCAddress,
+          currentWalletAddress,
           {
             gasLimit: 1200000,
           }
@@ -165,9 +165,6 @@ export default function Home() {
   }
 
   async function getProposalData() {
-    const value = 2.5;
-    const bigNumberValue = ethers.utils.parseUnits(value.toString(), 6);
-    console.log(bigNumberValue);
     const { ethereum } = window;
 
     try {
@@ -175,18 +172,22 @@ export default function Home() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         if (urlObject.treasurySCAddress != undefined) {
-          console.log(urlObject.treasurySCAddress);
           //create contract instance
-          const treasuryContractInstance = new ethers.Contract(
-            urlObject.treasurySCAddress,
-            treasuryABI,
+          const treasuryManagerContractInstance = new ethers.Contract(
+            treasuryManagerAddress,
+            treasuryManagerABI,
             signer
           );
 
           const proposalAddresses =
-            await treasuryContractInstance.getProposals();
+            await treasuryManagerContractInstance.getProposals(
+              urlObject.treasurySCAddress
+            );
           const allProposalData =
-            await treasuryContractInstance.getProposalData(proposalAddresses);
+            await treasuryManagerContractInstance.getProposalOverviewData(
+              urlObject.treasurySCAddress,
+              proposalAddresses
+            );
 
           // declare new array
           let new_proposals = [];
@@ -372,7 +373,11 @@ export default function Home() {
   ) => {
     router.push({
       pathname: `/createProposal`,
-      query: { treasuryAddress: treasuryContractAddr, treasuryUSDCBalance },
+      query: {
+        treasuryManagerAddress,
+        treasuryAddress: treasuryContractAddr,
+        treasuryUSDCBalance,
+      },
     });
   };
 
@@ -390,10 +395,10 @@ export default function Home() {
 
   useEffect(() => {
     connectWallet();
-    hasUserJoinedTreasury();
+
     getUSDCBalance();
     getProposalData();
-  }, [router.query, isLoading]);
+  }, [router.query, isLoading, currentWalletAddress]);
 
   return (
     <>
@@ -493,6 +498,9 @@ export default function Home() {
                         return (
                           <>
                             <div className={styles.proposalsContainer}>
+                              <div className={styles.proposalStatusText}>
+                                {proposal.status}
+                              </div>
                               <h2 className={styles.createBusinessAccountText}>
                                 <div>{proposal.title}</div>
                               </h2>
