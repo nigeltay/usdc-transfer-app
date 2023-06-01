@@ -53,18 +53,18 @@ export default function Home() {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
-      //create contract instance
+      //(1)Create Treasury Manager contract instance
       const treasuryManagerContractInstance = new ethers.Contract(
         treasuryContractAddress as string,
         treasuryManagerABI,
         signer
       );
 
-      // call getTreasuries function to get all the treasuries contract addresses
+      //(2) call getTreasuries function to get all the treasuries contract addresses
       const allTreasuriesAddresses =
         await treasuryManagerContractInstance.getTreasuries();
 
-      //call getTreasuriesData function to get all data of each treasury
+      //(3) call getTreasuriesData function to get all data of each treasury
       const allTreasuries =
         await treasuryManagerContractInstance.getTreasuriesData(
           allTreasuriesAddresses
@@ -92,8 +92,8 @@ export default function Home() {
         new_treasuries.push(newItem);
       }
 
+      //(4) set treasuries items to state variable
       setTreasuries(new_treasuries);
-      console.log(new_treasuries);
     }
   }
 

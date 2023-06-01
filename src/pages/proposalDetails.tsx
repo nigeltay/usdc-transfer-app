@@ -155,14 +155,14 @@ export default function Home() {
           const provider = new ethers.providers.Web3Provider(ethereum);
           const signer = provider.getSigner();
 
-          //create contract instance
+          //create treasury manaager contract instance
           const treasuryManagerContractInstance = new ethers.Contract(
             treasuryManagerAddress,
             treasuryManagerABI,
             signer
           );
 
-          //call hasVoted function form the contract
+          //call hasVoted function from the contract
           const hasUserVoted = await treasuryManagerContractInstance.hasVoted(
             treasurySCAddress,
             proposalSCAddress,
@@ -173,7 +173,7 @@ export default function Home() {
         }
       }
     } catch (error) {
-      alert(`Error 123: ${error}`);
+      alert(`Error : ${error}`);
     }
   }
 
@@ -188,14 +188,14 @@ export default function Home() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        // create contract instance
+        // create treasury manager contract instance
         const treasuryManagerContractInstance = new ethers.Contract(
           treasuryManagerAddress,
           treasuryManagerABI,
           signer
         );
 
-        //call hasVoted function form the contract
+        //(13) Call voteOnWithdrawProposal function from the contract
         const voteForProposal =
           await treasuryManagerContractInstance.voteOnWithdrawProposal(
             treasurySCAddress,
@@ -207,18 +207,19 @@ export default function Home() {
             }
           );
 
+        //(14) wait for transaction to finish
         await voteForProposal.wait();
 
         alert(`Transaction sent! Hash: ${voteForProposal.hash}`);
         closeModal();
 
-        //call getStatus function from contract
         // create contract instance
         const withdrawProposalContractInstance = new ethers.Contract(
           proposalSCAddress,
           withdrawProposalABI,
           signer
         );
+        //call getStatus function from withdrawProposal contract
         const status = await withdrawProposalContractInstance.getStatus();
 
         if (status === "Success") {
@@ -238,6 +239,7 @@ export default function Home() {
               targetAddress: proposalData.targetWalletAddress,
             });
 
+            //response data of API call
             const createUSDCTransferResponseData =
               createUSDCTransfer.data.responseData.data;
 

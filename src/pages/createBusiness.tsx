@@ -71,15 +71,6 @@ export default function Home() {
       });
       const createWalletResponseData = createWallet.data.responseData.data;
 
-      //sample output response
-      // {
-      //   "walletId": "1016266156",
-      //   "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
-      //   "type": "end_user_wallet",
-      //   "description": "Business Wallet",
-      //   "balances": []
-      // }
-
       //get wallet Id to create blockchain address for that wallet
       const newWalletId = createWalletResponseData.walletId;
 
@@ -94,35 +85,23 @@ export default function Home() {
       const createblockchainAddressResponseData =
         createBlockchainAddress.data.responseData.data;
 
-      //sample output response
-      //  {
-      //   data: {
-      //     address: '0xc833843f80795953c8630732f5de6f0261689212',
-      //     currency: 'USD',
-      //     chain: 'AVAX'
-      //   }
-      // }
-
       const businessAccountBlockchainAddress =
         createblockchainAddressResponseData.address;
-      console.log(businessAccountBlockchainAddress);
 
-      //call smart contract to create treasury
-      //store all data into blockchain
       const { ethereum } = window;
 
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        //create contract instance
+        //Create treasury manager contract instance
         const treasuryManagerContractInstance = new ethers.Contract(
           treasuryManagerContractAddress,
           treasuryManagerABI,
           signer
         );
 
-        //call createTreasury from the smart contract
+        //(5) Call createTreasury function from the smart contract
         let { hash } = await treasuryManagerContractInstance.createTreasury(
           title,
           walletDescription,
@@ -133,10 +112,10 @@ export default function Home() {
           }
         );
 
-        //wait for transaction to be mined
+        //(6)wait for transaction to be mined
         await provider.waitForTransaction(hash);
 
-        //display alert message
+        //(7)display alert message
         alert(`Transaction sent! Hash: ${hash}`);
 
         //close modal

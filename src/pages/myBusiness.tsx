@@ -108,7 +108,7 @@ export default function Home() {
               urlObject.treasurySCAddress,
               currentWalletAddress
             );
-          console.log(isMember);
+
           setHasJoinedTreasury(isMember);
         }
       }
@@ -243,7 +243,6 @@ export default function Home() {
       return alert("USDC Amount must be a number. ");
     }
 
-    // Replace with your own values
     const usdcContractAddress = "0x5425890298aed601595a70AB815c96711a31Bc65"; // USDC contract address on Avalanche testnet
     const recipientAddress = urlObject.depositTreasuryWalletAddress;
 
@@ -256,7 +255,7 @@ export default function Home() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        //create contract instance
+        // (8) create USDC contract instance
         const usdcContractInstance = new ethers.Contract(
           usdcContractAddress,
           usdcABI,
@@ -264,15 +263,16 @@ export default function Home() {
         );
 
         // approve USDC tokens before transfer
+        // (9) call approve function from USDC token contract
         const approveUsdcTxn = await usdcContractInstance.approve(
           currentWalletAddress,
-          ethers.utils.parseUnits(USDCAmount, 6), //amount is a placeholder, amount is set when metamask pop-up shows
+          ethers.utils.parseUnits(USDCAmount, 6),
           {
             gasLimit: 1200000,
           }
         );
 
-        // Wait for the transaction to be mined
+        //(10) Wait for the transaction to be mined
         await approveUsdcTxn.wait();
         alert(`Transaction sent! Hash: ${approveUsdcTxn.hash}`);
 
@@ -281,7 +281,7 @@ export default function Home() {
         setLoadedData("Sending USDC...Please wait");
         openModal();
 
-        // Transfer USDC tokens
+        //(11) Transfer USDC tokens by calling the transferFrom function in the USDC token contract
         const usdcTransferTxn = await usdcContractInstance.transferFrom(
           currentWalletAddress,
           recipientAddress,
@@ -291,7 +291,7 @@ export default function Home() {
           }
         );
 
-        // Wait for the transaction to be mined
+        //(12) Wait for the transaction to be mined
         await usdcTransferTxn.wait();
         alert(`Transaction sent! Hash: ${usdcTransferTxn.hash}`);
 
