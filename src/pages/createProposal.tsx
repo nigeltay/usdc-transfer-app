@@ -1,12 +1,7 @@
-import Image from "next/image";
 import Modal from "react-modal";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Head from "next/head";
 import styles from "../../styles/Home.module.css";
-// import uuid from "uuid-random";
-import axios from "axios";
 import { useRouter } from "next/router";
 
 //ABIs
@@ -37,12 +32,6 @@ export default function Home() {
   function closeModal() {
     setIsLoading(false);
   }
-  const goToHomepage = () => {
-    router.push({
-      pathname: "/",
-      //   query: { params1: "test" }, //send data to page
-    });
-  };
 
   const goBack = () => {
     router.back();
@@ -50,9 +39,6 @@ export default function Home() {
 
   //connect metamask wallet
   async function connectWallet() {
-    //get value from url query
-    // console.log(router.query);
-
     //connect metamask account on page enter
     const { ethereum } = window;
 
@@ -72,10 +58,9 @@ export default function Home() {
   }
 
   async function createProposal() {
-    //TODO: check if balance of treasury <= to withdraw amount
     const businessAccountUSDCAmount = parseFloat(treasuryUSDCBalance);
 
-    //validate field
+    //validate fields
     if (!title) {
       return alert("Title field is empty. ");
     }
@@ -327,8 +312,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* ---- */}
         </div>
       </div>
     </>

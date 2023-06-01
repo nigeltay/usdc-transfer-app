@@ -1,11 +1,7 @@
-import Image from "next/image";
 import Modal from "react-modal";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Head from "next/head";
 import styles from "../../styles/Home.module.css";
-// import uuid from "uuid-random";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -74,7 +70,6 @@ export default function Home() {
         description: walletDescription,
       });
       const createWalletResponseData = createWallet.data.responseData.data;
-      console.log(createWalletResponseData);
 
       //sample output response
       // {
@@ -98,7 +93,7 @@ export default function Home() {
       );
       const createblockchainAddressResponseData =
         createBlockchainAddress.data.responseData.data;
-      console.log(createblockchainAddressResponseData);
+
       //sample output response
       //  {
       //   data: {

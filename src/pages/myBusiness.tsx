@@ -1,11 +1,7 @@
-import Image from "next/image";
 import Modal from "react-modal";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Head from "next/head";
 import styles from "../../styles/Home.module.css";
-// import uuid from "uuid-random";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Treasury } from "@/app/page";
@@ -311,7 +307,6 @@ export default function Home() {
 
   async function getUSDCBalance() {
     const apiKey = process.env.NEXT_PUBLIC_CIRCLE_API_KEY;
-    // console.log(apiKey);
 
     try {
       if (urlObject.treasurySCAddress != undefined) {
@@ -323,7 +318,6 @@ export default function Home() {
 
         const getWalletBalanceResponseData =
           getWalletBalance.data.responseData.data;
-        // console.log(getWalletBalanceResponseData.balances);
 
         const USDCbalance = getWalletBalanceResponseData.balances;
 
@@ -337,36 +331,11 @@ export default function Home() {
     } catch (error) {
       alert(`Error: ${error}`);
     }
-
-    //sample output reponse
-    //   {
-    //     "data": {
-    //         "walletId": "1016283032",
-    //         "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
-    //         "type": "end_user_wallet",
-    //         "description": "testing wallet",
-    //         "balances": []
-    //     }
-    // }
-
-    //   {
-    //     "walletId": "1013946635",
-    //     "entityId": "40868828-8a75-4f55-bbe1-37b4c8190a83",
-    //     "type": "end_user_wallet",
-    //     "description": "Lesson 7 practical",
-    //     "balances": [
-    //         {
-    //             "amount": "1.00",
-    //             "currency": "USD"
-    //         }
-    //     ]
-    // }
   }
 
   const goToHomepage = () => {
     router.push({
       pathname: "/",
-      //   query: { params1: "test" }, //send data to page
     });
   };
 

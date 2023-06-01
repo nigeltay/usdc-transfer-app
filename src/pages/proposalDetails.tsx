@@ -1,17 +1,14 @@
-import Image from "next/image";
 import Modal from "react-modal";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Head from "next/head";
 import styles from "../../styles/Home.module.css";
-// import uuid from "uuid-random";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Treasury } from "@/app/page";
 import { Proposal } from "./myBusiness";
 //ABIs
 import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import withdrawProposalABI from "../../utils/withdrawProposalABI.json";
 
 export default function Home() {
   const router = useRouter();
@@ -183,8 +180,6 @@ export default function Home() {
   async function vote(decision: boolean) {
     const { ethereum } = window;
 
-    console.log(proposalData.noOfYesVotes);
-
     try {
       if (ethereum) {
         setLoadedData("Voting...Please wait");
@@ -217,7 +212,16 @@ export default function Home() {
         alert(`Transaction sent! Hash: ${voteForProposal.hash}`);
         closeModal();
 
-        if (proposalData.noOfYesVotes === 1 && decision === true) {
+        //call getStatus function from contract
+        // create contract instance
+        const withdrawProposalContractInstance = new ethers.Contract(
+          proposalSCAddress,
+          withdrawProposalABI,
+          signer
+        );
+        const status = await withdrawProposalContractInstance.getStatus();
+
+        if (status === "Success") {
           alert(
             "There are 2 Yes votes in the proposal...Initiating transfer of USDC from business account to target wallet address. Click Ok to continue."
           );
