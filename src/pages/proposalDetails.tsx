@@ -196,21 +196,9 @@ export default function Home() {
         );
 
         //(13) Call voteOnWithdrawProposal function from the contract
-        const voteForProposal =
-          await treasuryManagerContractInstance.voteOnWithdrawProposal(
-            treasurySCAddress,
-            proposalSCAddress,
-            decision,
-            currentWalletAddress,
-            {
-              gasLimit: 3000000,
-            }
-          );
 
         //(14) wait for transaction to finish
-        await voteForProposal.wait();
 
-        alert(`Transaction sent! Hash: ${voteForProposal.hash}`);
         closeModal();
 
         // create contract instance

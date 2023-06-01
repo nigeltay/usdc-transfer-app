@@ -102,21 +102,10 @@ export default function Home() {
         );
 
         //(5) Call createTreasury function from the smart contract
-        let { hash } = await treasuryManagerContractInstance.createTreasury(
-          title,
-          walletDescription,
-          businessAccountBlockchainAddress,
-          newWalletId,
-          {
-            gasLimit: 2000000,
-          }
-        );
 
         //(6)wait for transaction to be mined
-        await provider.waitForTransaction(hash);
 
         //(7)display alert message
-        alert(`Transaction sent! Hash: ${hash}`);
 
         //close modal
         closeModal();

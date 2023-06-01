@@ -54,46 +54,17 @@ export default function Home() {
       const signer = provider.getSigner();
 
       //(1)Create Treasury Manager contract instance
-      const treasuryManagerContractInstance = new ethers.Contract(
-        treasuryContractAddress as string,
-        treasuryManagerABI,
-        signer
-      );
 
       //(2) call getTreasuries function to get all the treasuries contract addresses
-      const allTreasuriesAddresses =
-        await treasuryManagerContractInstance.getTreasuries();
 
       //(3) call getTreasuriesData function to get all data of each treasury
-      const allTreasuries =
-        await treasuryManagerContractInstance.getTreasuriesData(
-          allTreasuriesAddresses
-        );
 
       // declare new array
       let new_treasuries = [];
 
       //iterate and loop through the data retrieve from the blockchain
-      for (let i = 0; i < allTreasuries.description.length; i++) {
-        let title: string = allTreasuries.title[i];
-        let description: string = allTreasuries.description[i];
-        let treasurySCAddress: string = allTreasuriesAddresses[i];
-        let depositTreasuryWalletAddress: string =
-          allTreasuries.depositAddress[i];
-        let walletId: string = allTreasuries.walletID[i];
-
-        let newItem: Treasury = {
-          title,
-          description,
-          treasurySCAddress,
-          depositTreasuryWalletAddress,
-          walletId,
-        };
-        new_treasuries.push(newItem);
-      }
 
       //(4) set treasuries items to state variable
-      setTreasuries(new_treasuries);
     }
   }
 
