@@ -19,7 +19,7 @@ export type Treasury = {
 };
 
 export default function Home() {
-  const treasuryContractAddress =
+  const treasuryManagerContractAddress =
     process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
@@ -119,7 +119,9 @@ export default function Home() {
             business to make contributions.`}
             </div>
             <div className={styles.homePageButtonContainer}>
-              <Link href={`/createBusiness?address=${treasuryContractAddress}`}>
+              <Link
+                href={`/createBusiness?address=${treasuryManagerContractAddress}`}
+              >
                 <button className={styles.goToCreateBusinessPageBtn}>
                   Create
                 </button>
@@ -172,7 +174,7 @@ export default function Home() {
                         </div>
                         <div className={styles.homePageButtonContainer}>
                           <Link
-                            href={`/myBusiness?managerAddress=${treasuryContractAddress}&address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
+                            href={`/myBusiness?managerAddress=${treasuryManagerContractAddress}&address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
                           >
                             <button
                               className={styles.goToCreateBusinessPageBtn}
