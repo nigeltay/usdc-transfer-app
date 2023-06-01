@@ -19,7 +19,8 @@ export type Treasury = {
 };
 
 export default function Home() {
-  const treasuryContractAddress = "0xCBbce17e13C5d4C3397f6DF376d06c70223bccB5"; //TODO: put into env file
+  const treasuryContractAddress =
+    process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
   const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -54,7 +55,7 @@ export default function Home() {
 
       //create contract instance
       const treasuryManagerContractInstance = new ethers.Contract(
-        treasuryContractAddress,
+        treasuryContractAddress as string,
         treasuryManagerABI,
         signer
       );
