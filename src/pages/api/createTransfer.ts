@@ -20,7 +20,7 @@ export default async function handler(
       chain: "AVAX",
     },
     amount: {
-      amount: amount, //transfer all the USDC amount the treasury has
+      amount: amount, //transfer all the USDC amount the business account has
       currency: "USD",
     },
   });

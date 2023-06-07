@@ -8,22 +8,22 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 
 //ABIs
-import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import accountManagerABI from "../../utils/accountManagerABI.json";
 
-export type Treasury = {
+export type Account = {
   title: string;
   description: string;
-  treasurySCAddress: string;
-  depositTreasuryWalletAddress: string;
+  accountSCAddress: string;
+  depositAccountWalletAddress: string;
   walletId: string;
 };
 
 export default function Home() {
-  const treasuryManagerContractAddress =
+  const accountManagerContractAddress =
     process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS;
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
-  const [treasuries, setTreasuries] = useState<Treasury[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   async function connectWallet() {
     //connect metamask account on page enter
@@ -43,28 +43,53 @@ export default function Home() {
     //set to variable to store current wallet address
     setCurrentWalletAddress(walletAddr);
 
-    await getAllTreasuries();
+    await getAllAccounts();
   }
 
-  async function getAllTreasuries() {
+  async function getAllAccounts() {
     const { ethereum } = window;
 
     if (ethereum) {
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
-      //(1)Create Treasury Manager contract instance
-
-      //(2) call getTreasuries function to get all the treasuries contract addresses
-
-      //(3) call getTreasuriesData function to get all data of each treasury
-
+      //(1)Create Account Manager contract instance
+      const accountManagerContractInstance = new ethers.Contract(
+        accountManagerContractAddress as string,
+        accountManagerABI,
+        signer
+      );
+      //(2) call getAccounts function to get all the accounts contract addresses
+      const allAccountAddresses =
+        await accountManagerContractInstance.getAccounts();
+      //(3) call getAccountsData function to get all data of each account
+      const allAccountData =
+        await accountManagerContractInstance.getAccountsData(
+          allAccountAddresses
+        );
       // declare new array
-      let new_treasuries = [];
+      let new_accounts = [];
 
       //iterate and loop through the data retrieve from the blockchain
+      for (let i = 0; i < allAccountData.description.length; i++) {
+        let title: string = allAccountData.title[i];
+        let description: string = allAccountData.description[i];
+        let accountSCAddress: string = allAccountAddresses[i];
+        let depositAccountWalletAddress: string =
+          allAccountData.depositAddress[i];
+        let walletId: string = allAccountData.walletID[i];
 
-      //(4) set treasuries items to state variable
+        let newItem: Account = {
+          title,
+          description,
+          accountSCAddress,
+          depositAccountWalletAddress,
+          walletId,
+        };
+        new_accounts.push(newItem);
+      }
+      //(4) set accounts items to state variable
+      setAccounts(new_accounts);
     }
   }
 
@@ -120,7 +145,7 @@ export default function Home() {
             </div>
             <div className={styles.homePageButtonContainer}>
               <Link
-                href={`/createBusiness?address=${treasuryManagerContractAddress}`}
+                href={`/createBusiness?address=${accountManagerContractAddress}`}
               >
                 <button className={styles.goToCreateBusinessPageBtn}>
                   Create
@@ -134,7 +159,7 @@ export default function Home() {
           </div>
 
           <div>
-            {treasuries.length === 0 ? (
+            {accounts.length === 0 ? (
               <div className={styles.homePageEmptyContainer}>
                 <h2
                   className={styles.createBusinessAccountText}
@@ -155,12 +180,12 @@ export default function Home() {
               </div>
             ) : (
               <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {treasuries.map((treasury) => {
+                {accounts.map((account) => {
                   return (
                     <>
                       <div className={styles.homePageContainers}>
                         <h2 className={styles.createBusinessAccountText}>
-                          <div>{`${treasury.title}`}</div>
+                          <div>{`${account.title}`}</div>
                         </h2>
                         <div
                           style={{
@@ -170,11 +195,11 @@ export default function Home() {
                             //textAlign: "center",
                           }}
                         >
-                          {`${treasury.description}`}
+                          {`${account.description}`}
                         </div>
                         <div className={styles.homePageButtonContainer}>
                           <Link
-                            href={`/myBusiness?managerAddress=${treasuryManagerContractAddress}&address=${treasury.treasurySCAddress}&description=${treasury.description}&title=${treasury.title}&depositTreasuryWalletAddress=${treasury.depositTreasuryWalletAddress}&walletId=${treasury.walletId}`}
+                            href={`/myBusiness?managerAddress=${accountManagerContractAddress}&address=${account.accountSCAddress}&description=${account.description}&title=${account.title}&depositAccountWalletAddress=${account.depositAccountWalletAddress}&walletId=${account.walletId}`}
                           >
                             <button
                               className={styles.goToCreateBusinessPageBtn}

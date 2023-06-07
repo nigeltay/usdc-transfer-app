@@ -5,7 +5,7 @@ import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 
 //ABIs
-import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import accountManagerABI from "../../utils/accountManagerABI.json";
 
 export default function Home() {
   const router = useRouter();
@@ -21,9 +21,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   //router query items
-  const treasurySCAddress = router.query.treasuryAddress as string;
-  const treasuryUSDCBalance = router.query.treasuryUSDCBalance as string;
-  const treasuryManagerAddress = router.query.treasuryManagerAddress as string;
+  const accountContractAddress = router.query.accountContractAddress as string;
+  const accountUSDCBalance = router.query.accountUSDCBalance as string;
+  const accountManagerAddress = router.query.accountManagerAddress as string;
 
   function openModal() {
     setIsLoading(true);
@@ -58,7 +58,7 @@ export default function Home() {
   }
 
   async function createProposal() {
-    const businessAccountUSDCAmount = parseFloat(treasuryUSDCBalance);
+    const businessAccountUSDCAmount = parseFloat(accountUSDCBalance);
 
     //validate fields
     if (!title) {
@@ -101,16 +101,16 @@ export default function Home() {
         const signer = provider.getSigner();
 
         //create contract instance
-        const treasuryManagerContractInstance = new ethers.Contract(
-          treasuryManagerAddress,
-          treasuryManagerABI,
+        const accountManagerContractInstance = new ethers.Contract(
+          accountManagerAddress,
+          accountManagerABI,
           signer
         );
 
         //call createWithdrawProposal from the smart contract
         let { hash } =
-          await treasuryManagerContractInstance.createWithdrawProposal(
-            treasurySCAddress,
+          await accountManagerContractInstance.createWithdrawProposal(
+            accountContractAddress,
             title,
             description,
             ethers.utils.parseUnits(withdrawAmount, 6),

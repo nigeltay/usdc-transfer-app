@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 //ABIs
-import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import accountManagerABI from "../../utils/accountManagerABI.json";
 
 export default function Home() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function Home() {
   const [loadedData, setLoadedData] = useState("Loading...");
   const [isLoading, setIsLoading] = useState(false);
 
-  const treasuryManagerContractAddress = router.query.address as string;
+  const accountManagerContractAddress = router.query.address as string;
   function openModal() {
     setIsLoading(true);
   }
@@ -94,19 +94,27 @@ export default function Home() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        //Create treasury manager contract instance
-        const treasuryManagerContractInstance = new ethers.Contract(
-          treasuryManagerContractAddress,
-          treasuryManagerABI,
+        //Create account manager contract instance
+        const accountManagerContractInstance = new ethers.Contract(
+          accountManagerContractAddress,
+          accountManagerABI,
           signer
         );
 
-        //(5) Call createTreasury function from the smart contract
-
+        //(5) Call createAccount function from the smart contract
+        let { hash } = await accountManagerContractInstance.createAccount(
+          title,
+          walletDescription,
+          businessAccountBlockchainAddress,
+          newWalletId,
+          {
+            gasLimit: 2000000,
+          }
+        );
         //(6)wait for transaction to be mined
-
+        await provider.waitForTransaction(hash);
         //(7)display alert message
-
+        alert(`Transaction sent! Hash: ${hash}`);
         //close modal
         closeModal();
         //clear fields

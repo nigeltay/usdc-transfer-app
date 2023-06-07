@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Treasury } from "@/app/page";
+import { Account } from "@/app/page";
 //ABIs
 import usdcABI from "../../utils/USDC.json";
-import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import accountManagerABI from "../../utils/accountManagerABI.json";
 
 export type Proposal = {
   title: string;
@@ -26,9 +26,8 @@ export default function Home() {
 
   const [currentWalletAddress, setCurrentWalletAddress] = useState<string>("");
 
-  const [joinedTreasury, setHasJoinedTreasury] = useState<boolean>(false);
-  const [treasuryUSDCBalance, setTreasuryUSDCBalance] =
-    useState<string>("0.00");
+  const [joinedAccount, setHasJoinedAccount] = useState<boolean>(false);
+  const [accountUSDCBalance, setAccountUSDCBalance] = useState<string>("0.00");
   const [USDCAmount, setUSDCAmount] = useState<string>("");
 
   const [loadedData, setLoadedData] = useState("Loading...");
@@ -37,19 +36,19 @@ export default function Home() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
 
   // router params items
-  const treasuryAddress = router.query.address as string;
-  const treasuryManagerAddress = router.query.managerAddress as string;
+  const accountAddress = router.query.address as string;
+  const accountManagerAddress = router.query.managerAddress as string;
   const description = router.query.description as string;
   const title = router.query.title as string;
   const walletId = router.query.walletId as string;
-  const depositTreasuryWalletAddress = router.query
-    .depositTreasuryWalletAddress as string;
+  const depositAccountWalletAddress = router.query
+    .depositAccountWalletAddress as string;
 
-  const urlObject: Treasury = {
+  const urlObject: Account = {
     title,
     description,
-    treasurySCAddress: treasuryAddress,
-    depositTreasuryWalletAddress,
+    accountSCAddress: accountAddress,
+    depositAccountWalletAddress,
     walletId,
   };
   // console.log(urlObject);
@@ -80,10 +79,10 @@ export default function Home() {
 
     setCurrentWalletAddress(walletAddr);
 
-    await hasUserJoinedTreasury();
+    await hasUserJoinedAccount();
   }
 
-  async function hasUserJoinedTreasury() {
+  async function hasUserJoinedAccount() {
     const { ethereum } = window;
     console.log(currentWalletAddress);
 
@@ -93,23 +92,23 @@ export default function Home() {
         const signer = provider.getSigner();
 
         if (
-          urlObject.treasurySCAddress != undefined &&
+          urlObject.accountSCAddress != undefined &&
           currentWalletAddress !== ""
         ) {
           //create contract instance
-          const treasuryManagerContractInstance = new ethers.Contract(
-            treasuryManagerAddress,
-            treasuryManagerABI,
+          const accountManagerContractInstance = new ethers.Contract(
+            accountManagerAddress,
+            accountManagerABI,
             signer
           );
 
           const isMember =
-            await treasuryManagerContractInstance.hasJoinedTreasury(
-              urlObject.treasurySCAddress,
+            await accountManagerContractInstance.hasJoinedAccount(
+              urlObject.accountSCAddress,
               currentWalletAddress
             );
 
-          setHasJoinedTreasury(isMember);
+          setHasJoinedAccount(isMember);
         }
       }
     } catch (error) {
@@ -118,7 +117,7 @@ export default function Home() {
     }
   }
 
-  async function joinTreasury() {
+  async function joinAccount() {
     try {
       setLoadedData("Joining as member ...Please wait");
       openModal();
@@ -129,15 +128,15 @@ export default function Home() {
         const signer = provider.getSigner();
 
         //create contract instance
-        const treasuryManagerContractInstance = new ethers.Contract(
-          treasuryManagerAddress,
-          treasuryManagerABI,
+        const accountManagerContractInstance = new ethers.Contract(
+          accountManagerAddress,
+          accountManagerABI,
           signer
         );
 
-        //call joinTreasury from the smart contract
-        let { hash } = await treasuryManagerContractInstance.joinTreasury(
-          urlObject.treasurySCAddress,
+        //call joinAccount from the smart contract
+        let { hash } = await accountManagerContractInstance.joinAccount(
+          urlObject.accountSCAddress,
           currentWalletAddress,
           {
             gasLimit: 1200000,
@@ -150,8 +149,8 @@ export default function Home() {
         //display alert message
         alert(`Transaction sent! Hash: ${hash}`);
 
-        //update and check if user joined the treasury
-        await hasUserJoinedTreasury();
+        //update and check if user joined the account
+        await hasUserJoinedAccount();
 
         //close modal
         closeModal();
@@ -170,21 +169,21 @@ export default function Home() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        if (urlObject.treasurySCAddress != undefined) {
+        if (urlObject.accountSCAddress != undefined) {
           //create contract instance
-          const treasuryManagerContractInstance = new ethers.Contract(
-            treasuryManagerAddress,
-            treasuryManagerABI,
+          const accountManagerContractInstance = new ethers.Contract(
+            accountManagerAddress,
+            accountManagerABI,
             signer
           );
 
           const proposalAddresses =
-            await treasuryManagerContractInstance.getProposals(
-              urlObject.treasurySCAddress
+            await accountManagerContractInstance.getProposals(
+              urlObject.accountSCAddress
             );
           const allProposalData =
-            await treasuryManagerContractInstance.getProposalOverviewData(
-              urlObject.treasurySCAddress,
+            await accountManagerContractInstance.getProposalOverviewData(
+              urlObject.accountSCAddress,
               proposalAddresses
             );
 
@@ -244,7 +243,7 @@ export default function Home() {
     }
 
     const usdcContractAddress = "0x5425890298aed601595a70AB815c96711a31Bc65"; // USDC contract address on Avalanche testnet
-    const recipientAddress = urlObject.depositTreasuryWalletAddress;
+    const recipientAddress = urlObject.depositAccountWalletAddress;
 
     try {
       const { ethereum } = window;
@@ -256,21 +255,40 @@ export default function Home() {
         const signer = provider.getSigner();
 
         // (8) create USDC contract instance
-
+        const usdcContractInstance = new ethers.Contract(
+          usdcContractAddress,
+          usdcABI,
+          signer
+        );
         // approve USDC tokens before transfer
         // (9) call approve function from USDC token contract
-
+        const approveUsdcTxn = await usdcContractInstance.approve(
+          currentWalletAddress,
+          ethers.utils.parseUnits(USDCAmount, 6),
+          {
+            gasLimit: 1200000,
+          }
+        );
         //(10) Wait for the transaction to be mined
-
+        await approveUsdcTxn.wait();
+        alert(`Transaction sent! Hash: ${approveUsdcTxn.hash}`);
         closeModal();
 
         setLoadedData("Sending USDC...Please wait");
         openModal();
 
         //(11) Transfer USDC tokens by calling the transferFrom function in the USDC token contract
-
+        const usdcTransferTxn = await usdcContractInstance.transferFrom(
+          currentWalletAddress,
+          recipientAddress,
+          ethers.utils.parseUnits(USDCAmount, 6),
+          {
+            gasLimit: 100000,
+          }
+        );
         //(12) Wait for the transaction to be mined
-
+        await usdcTransferTxn.wait();
+        alert(`Transaction sent! Hash: ${usdcTransferTxn.hash}`);
         closeModal();
         setUSDCAmount("");
       }
@@ -285,7 +303,7 @@ export default function Home() {
     const apiKey = process.env.NEXT_PUBLIC_CIRCLE_API_KEY;
 
     try {
-      if (urlObject.treasurySCAddress != undefined) {
+      if (urlObject.accountSCAddress != undefined) {
         //call nextjs API endpoint to get wallet balance
         const getWalletBalance = await axios.post("/api/getWalletBalance", {
           apiKey: apiKey,
@@ -298,10 +316,10 @@ export default function Home() {
         const USDCbalance = getWalletBalanceResponseData.balances;
 
         if (USDCbalance.length === 0) {
-          setTreasuryUSDCBalance("0.00");
+          setAccountUSDCBalance("0.00");
         } else {
           //todo: filter by USD currnecy
-          setTreasuryUSDCBalance(`${USDCbalance[0].amount}`);
+          setAccountUSDCBalance(`${USDCbalance[0].amount}`);
         }
       }
     } catch (error) {
@@ -316,12 +334,12 @@ export default function Home() {
   };
 
   const goToProposalDetailsPage = (proposalAddress: string) => {
-    if (joinedTreasury === true) {
+    if (joinedAccount === true) {
       router.push({
         pathname: "/proposalDetails",
         query: {
-          treasuryAddress: treasuryAddress,
-          treasuryManagerAddress,
+          accountAddress: accountAddress,
+          accountManagerAddress,
           proposalAddress,
           walletId,
         }, //send data to page
@@ -342,10 +360,10 @@ export default function Home() {
   }
 
   const goToCreateProposalPage = (
-    treasuryContractAddr: string,
-    treasuryUSDCBalance: string
+    accountContractAddr: string,
+    accountUSDCBalance: string
   ) => {
-    if (treasuryUSDCBalance === "0.00") {
+    if (accountUSDCBalance === "0.00") {
       alert(
         `Please fund the account with some USDC before creating a proposal.`
       );
@@ -353,9 +371,9 @@ export default function Home() {
       router.push({
         pathname: `/createProposal`,
         query: {
-          treasuryManagerAddress,
-          treasuryAddress: treasuryContractAddr,
-          treasuryUSDCBalance,
+          accountManagerAddress,
+          accountContractAddress: accountContractAddr,
+          accountUSDCBalance,
         },
       });
     }
@@ -455,13 +473,13 @@ export default function Home() {
                   {`${proposals.length} Proposals Created`}
                 </div>
                 <div>
-                  {joinedTreasury === false ? null : (
+                  {joinedAccount === false ? null : (
                     <button
                       className={styles.createProposalBtn}
                       onClick={() =>
                         goToCreateProposalPage(
-                          urlObject.treasurySCAddress,
-                          treasuryUSDCBalance
+                          urlObject.accountSCAddress,
+                          accountUSDCBalance
                         )
                       }
                     >
@@ -537,9 +555,9 @@ export default function Home() {
                     //textAlign: "center",
                   }}
                 >
-                  {`$${treasuryUSDCBalance}`}
+                  {`$${accountUSDCBalance}`}
                   <div className={styles.buttonContainer}>
-                    {joinedTreasury === false ? null : (
+                    {joinedAccount === false ? null : (
                       <>
                         <input
                           type="text"
@@ -574,10 +592,10 @@ export default function Home() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  {joinedTreasury === false ? (
+                  {joinedAccount === false ? (
                     <>
                       <div className={styles.nonBoldText}>{`Not a member`}</div>
-                      <button className={styles.joinBtn} onClick={joinTreasury}>
+                      <button className={styles.joinBtn} onClick={joinAccount}>
                         Join
                       </button>
                     </>

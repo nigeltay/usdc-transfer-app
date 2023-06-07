@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { Proposal } from "./myBusiness";
 //ABIs
-import treasuryManagerABI from "../../utils/treasuryManagerABI.json";
+import accountManagerABI from "../../utils/accountManagerABI.json";
 import withdrawProposalABI from "../../utils/withdrawProposalABI.json";
 
 export default function Home() {
@@ -32,8 +32,8 @@ export default function Home() {
   });
 
   // router params items
-  const treasurySCAddress = router.query.treasuryAddress as string;
-  const treasuryManagerAddress = router.query.treasuryManagerAddress as string;
+  const accountSCAddress = router.query.accountAddress as string;
+  const accountManagerAddress = router.query.accountManagerAddress as string;
   const proposalSCAddress = router.query.proposalAddress as string;
   const walletId = router.query.walletId as string;
 
@@ -97,20 +97,20 @@ export default function Home() {
         const signer = provider.getSigner();
 
         if (
-          treasurySCAddress != undefined &&
-          treasuryManagerAddress != undefined &&
+          accountSCAddress != undefined &&
+          accountManagerAddress != undefined &&
           proposalSCAddress != undefined
         ) {
           //create contract instance
-          const treasuryManagerContractInstance = new ethers.Contract(
-            treasuryManagerAddress,
-            treasuryManagerABI,
+          const accountManagerContractInstance = new ethers.Contract(
+            accountManagerAddress,
+            accountManagerABI,
             signer
           );
 
           const allProposalData =
-            await treasuryManagerContractInstance.getProposalOverviewData(
-              treasurySCAddress,
+            await accountManagerContractInstance.getProposalOverviewData(
+              accountSCAddress,
               [proposalSCAddress]
             );
 
@@ -147,24 +147,24 @@ export default function Home() {
     try {
       if (ethereum) {
         if (
-          treasurySCAddress != undefined &&
-          treasuryManagerAddress != undefined &&
+          accountSCAddress != undefined &&
+          accountManagerAddress != undefined &&
           proposalSCAddress != undefined &&
           currentWalletAddress !== ""
         ) {
           const provider = new ethers.providers.Web3Provider(ethereum);
           const signer = provider.getSigner();
 
-          //create treasury manaager contract instance
-          const treasuryManagerContractInstance = new ethers.Contract(
-            treasuryManagerAddress,
-            treasuryManagerABI,
+          //create account manager contract instance
+          const accountManagerContractInstance = new ethers.Contract(
+            accountManagerAddress,
+            accountManagerABI,
             signer
           );
 
           //call hasVoted function from the contract
-          const hasUserVoted = await treasuryManagerContractInstance.hasVoted(
-            treasurySCAddress,
+          const hasUserVoted = await accountManagerContractInstance.hasVoted(
+            accountSCAddress,
             proposalSCAddress,
             currentWalletAddress
           );
@@ -188,16 +188,27 @@ export default function Home() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
 
-        // create treasury manager contract instance
-        const treasuryManagerContractInstance = new ethers.Contract(
-          treasuryManagerAddress,
-          treasuryManagerABI,
+        // create account manager contract instance
+        const accountManagerContractInstance = new ethers.Contract(
+          accountManagerAddress,
+          accountManagerABI,
           signer
         );
 
         //(13) Call voteOnWithdrawProposal function from the contract
-
+        const voteForProposal =
+          await accountManagerContractInstance.voteOnWithdrawProposal(
+            accountSCAddress,
+            proposalSCAddress,
+            decision,
+            currentWalletAddress,
+            {
+              gasLimit: 3000000,
+            }
+          );
         //(14) wait for transaction to finish
+        await voteForProposal.wait();
+        alert(`Transaction sent! Hash: ${voteForProposal.hash}`);
 
         closeModal();
 
