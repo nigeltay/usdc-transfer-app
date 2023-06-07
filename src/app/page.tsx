@@ -54,42 +54,15 @@ export default function Home() {
       const signer = provider.getSigner();
 
       //(1)Create Account Manager contract instance
-      const accountManagerContractInstance = new ethers.Contract(
-        accountManagerContractAddress as string,
-        accountManagerABI,
-        signer
-      );
+
       //(2) call getAccounts function to get all the accounts contract addresses
-      const allAccountAddresses =
-        await accountManagerContractInstance.getAccounts();
+
       //(3) call getAccountsData function to get all data of each account
-      const allAccountData =
-        await accountManagerContractInstance.getAccountsData(
-          allAccountAddresses
-        );
+
       // declare new array
       let new_accounts = [];
 
-      //iterate and loop through the data retrieve from the blockchain
-      for (let i = 0; i < allAccountData.description.length; i++) {
-        let title: string = allAccountData.title[i];
-        let description: string = allAccountData.description[i];
-        let accountSCAddress: string = allAccountAddresses[i];
-        let depositAccountWalletAddress: string =
-          allAccountData.depositAddress[i];
-        let walletId: string = allAccountData.walletID[i];
-
-        let newItem: Account = {
-          title,
-          description,
-          accountSCAddress,
-          depositAccountWalletAddress,
-          walletId,
-        };
-        new_accounts.push(newItem);
-      }
       //(4) set accounts items to state variable
-      setAccounts(new_accounts);
     }
   }
 

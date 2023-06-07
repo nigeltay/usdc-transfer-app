@@ -102,19 +102,11 @@ export default function Home() {
         );
 
         //(5) Call createAccount function from the smart contract
-        let { hash } = await accountManagerContractInstance.createAccount(
-          title,
-          walletDescription,
-          businessAccountBlockchainAddress,
-          newWalletId,
-          {
-            gasLimit: 2000000,
-          }
-        );
+
         //(6)wait for transaction to be mined
-        await provider.waitForTransaction(hash);
+
         //(7)display alert message
-        alert(`Transaction sent! Hash: ${hash}`);
+
         //close modal
         closeModal();
         //clear fields
