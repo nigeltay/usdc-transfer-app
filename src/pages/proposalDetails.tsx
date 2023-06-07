@@ -315,6 +315,12 @@ export default function Home() {
             <h2 className={styles.createBusinessAccountText}>
               <div>{`Details`}</div>
             </h2>
+            <div
+              className={styles.normalText}
+              style={{ paddingBottom: "10px", fontWeight: "bold" }}
+            >
+              {`In order for proposal to pass, it requires 2 YES votes.`}
+            </div>
             <div className={styles.normalText}>
               {`Withdraw Amount: ${proposalData.withdrawAmount} USDC`}
             </div>

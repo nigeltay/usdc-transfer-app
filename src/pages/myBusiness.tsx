@@ -199,7 +199,7 @@ export default function Home() {
             let status: string = allProposalData.status[i];
             let noOfYesVotes: number = allProposalData.numberOfYesVotes[i];
             let noOfNoVotes: number = allProposalData.numberOfNoVotes[i];
-            let proposerAddress: string = allProposalData.proposerAddress[i]; //??
+            let proposerAddress: string = allProposalData.proposerAddress[i];
             let proposalContractAddress: string = proposalAddresses[i];
 
             let newProposalItem: Proposal = {
@@ -511,6 +511,12 @@ export default function Home() {
                               <div
                                 className={styles.nonBoldText}
                               >{`proposed by: ${proposal.proposerAddress}`}</div>
+                              <div className={styles.nonBoldText}>
+                                {`Current number of votes: ${
+                                  parseInt(proposal.noOfNoVotes.toString()) +
+                                  parseInt(proposal.noOfYesVotes.toString())
+                                }`}
+                              </div>
                             </div>
                           </>
                         );
