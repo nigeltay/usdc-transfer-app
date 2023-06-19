@@ -50,6 +50,7 @@ export default function Home() {
     accountSCAddress: accountAddress,
     depositAccountWalletAddress,
     walletId,
+    isDeleted: false, //placeholder
   };
   // console.log(urlObject);
   function openModal() {
@@ -302,6 +303,57 @@ export default function Home() {
           //todo: filter by USD currnecy
           setAccountUSDCBalance(`${USDCbalance[0].amount}`);
         }
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  }
+
+  async function deleteAccount() {
+    if (joinedAccount === false) {
+      return alert("Only members can delete account.");
+    }
+
+    if (accountUSDCBalance !== "0.00") {
+      return alert(
+        "Business account balance needs to be emptied before account can be deleted."
+      );
+    }
+
+    try {
+      setLoadedData("Deleting account...Please wait");
+      openModal();
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        //create contract instance
+        const accountManagerContractInstance = new ethers.Contract(
+          accountManagerAddress,
+          accountManagerABI,
+          signer
+        );
+
+        //call joinAccount from the smart contract
+        let { hash } = await accountManagerContractInstance.deleteAccount(
+          urlObject.accountSCAddress,
+          {
+            gasLimit: 1200000,
+          }
+        );
+
+        //wait for transaction to be mined
+        await provider.waitForTransaction(hash);
+
+        //display alert message
+        alert(`Transaction sent! Hash: ${hash}`);
+
+        closeModal();
+
+        //redirect back to homepage
+        goToHomepage();
       }
     } catch (error) {
       alert(`Error: ${error}`);
@@ -568,6 +620,17 @@ export default function Home() {
                           Fund
                         </button>
                       </>
+                    )}
+                  </div>
+
+                  <div style={{ marginTop: "10px" }}>
+                    {joinedAccount && accountUSDCBalance === "0.00" && (
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={deleteAccount}
+                      >
+                        Delete Business Account
+                      </button>
                     )}
                   </div>
                 </div>

@@ -16,6 +16,7 @@ export type Account = {
   accountSCAddress: string;
   depositAccountWalletAddress: string;
   walletId: string;
+  isDeleted: boolean;
 };
 
 export default function Home() {
@@ -62,7 +63,7 @@ export default function Home() {
       // declare new array
       let new_accounts = [];
 
-      //(4) set accounts items to state variable
+      //(4) set non deleted accounts items to state variable
     }
   }
 
