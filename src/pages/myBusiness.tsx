@@ -336,7 +336,7 @@ export default function Home() {
           signer
         );
 
-        //call joinAccount from the smart contract
+        //call deleteAccount function from the smart contract
         let { hash } = await accountManagerContractInstance.deleteAccount(
           urlObject.accountSCAddress,
           {
